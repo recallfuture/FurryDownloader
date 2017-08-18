@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurryDownloader", "FurryDownloader.csproj", "{7ADD14AB-5DC3-42B1-9A84-2FC76282B1FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7ADD14AB-5DC3-42B1-9A84-2FC76282B1FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ADD14AB-5DC3-42B1-9A84-2FC76282B1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ADD14AB-5DC3-42B1-9A84-2FC76282B1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ADD14AB-5DC3-42B1-9A84-2FC76282B1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
