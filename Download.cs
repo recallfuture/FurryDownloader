@@ -13,7 +13,6 @@ namespace FurryDownloader
 {
     class Download
     {
-        public static List<string[]> result;
         /// <summary>
         /// 下载所给网址指向的页面信息
         /// </summary>

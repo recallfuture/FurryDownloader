@@ -40,6 +40,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.panel = new System.Windows.Forms.Panel();
+            this.InputCookie = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.InputStartPicNum = new System.Windows.Forms.TextBox();
             this.InputMaxPicNum = new System.Windows.Forms.TextBox();
             this.InputPageNum = new System.Windows.Forms.TextBox();
@@ -47,8 +49,6 @@
             this.FilePath = new System.Windows.Forms.TextBox();
             this.textBox = new System.Windows.Forms.TextBox();
             this.Help = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.InputCookie = new System.Windows.Forms.TextBox();
             info_name = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
@@ -175,6 +175,22 @@
             this.panel.Size = new System.Drawing.Size(459, 126);
             this.panel.TabIndex = 6;
             // 
+            // InputCookie
+            // 
+            this.InputCookie.Location = new System.Drawing.Point(91, 93);
+            this.InputCookie.Name = "InputCookie";
+            this.InputCookie.Size = new System.Drawing.Size(341, 25);
+            this.InputCookie.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 98);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(82, 15);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "自动登录：";
+            // 
             // InputStartPicNum
             // 
             this.InputStartPicNum.Location = new System.Drawing.Point(208, 63);
@@ -226,8 +242,7 @@
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox.Size = new System.Drawing.Size(521, 305);
             this.textBox.TabIndex = 7;
-            this.textBox.Text = "制作者：回夙未来    qq：1498881550\r\n默认下载到当前目录下以作者名命名的文件夹里。\r\n默认每页48张图片。默认将所选图集的图片全部下载。\r\n高级参" +
-    "数如果留空或填0，都会使用默认参数下载。\r\n如果想下载18x内容，请在自定登陆一栏填写登录后的cookie即可。\r\n其他注意事项可见“帮助”。\r\n\r\n";
+            this.textBox.Text = resources.GetString("textBox.Text");
             // 
             // Help
             // 
@@ -238,22 +253,6 @@
             this.Help.Text = "帮助";
             this.Help.UseVisualStyleBackColor = true;
             this.Help.Click += new System.EventHandler(this.Help_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 98);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(82, 15);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "自动登录：";
-            // 
-            // InputCookie
-            // 
-            this.InputCookie.Location = new System.Drawing.Point(91, 93);
-            this.InputCookie.Name = "InputCookie";
-            this.InputCookie.Size = new System.Drawing.Size(341, 25);
-            this.InputCookie.TabIndex = 15;
             // 
             // mainFrom
             // 
