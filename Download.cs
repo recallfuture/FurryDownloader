@@ -2,7 +2,9 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Drawing;
 
 /*
  * 下载网页或图片的类
@@ -17,27 +19,33 @@ namespace FurryDownloader
         /// </summary>
         /// <param name="strUrl">网址</param>
         /// <returns>成功则返回页面信息，失败返回null</returns>
-        public static string GetGeneralContent(string strUrl)
+        public static string GetGeneralContent(string strUrl, string cookie)
         {
-            string strMsg = string.Empty;
-            try
+            HttpHelper http = new HttpHelper();
+            HttpItem item = new HttpItem()
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(strUrl);
-                request.CookieContainer = SetCookies();
-                
-                WebResponse response = request.GetResponse();
-                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("gb2312"));
-
-                strMsg = reader.ReadToEnd();
-
-                reader.Close();
-                response.Close();
-            }
-            catch
+                URL = strUrl,//URL     必需项
+                Encoding = Encoding.UTF8,//编码格式（utf-8,gb2312,gbk）     可选项 默认类会自动识别
+                //Encoding = Encoding.Default,
+                Method = "get",//URL     可选项 默认为Get
+                Timeout = 10000,//连接超时时间     可选项默认为100000
+                IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
+                Cookie = cookie,//字符串Cookie     可选项
+                UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
+                Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
+                ContentType = "text/html",//返回类型    可选项有默认值
+                Referer = "http://www.furaffinity.net",//来源URL     可选项
+                ResultType = ResultType.String,//返回数据类型，是Byte还是String
+            };
+            //得到HTML代码
+            HttpResult result = http.GetHtml(item);
+            //返回的Html内容
+            string html = result.Html;
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                strMsg = null;
+                return html;
             }
-            return strMsg;
+            else return null;
         }
 
         /// <summary>
@@ -66,39 +74,40 @@ namespace FurryDownloader
                 }
 
 
-                WebRequest request = WebRequest.Create(strUrl);
-                WebResponse response = request.GetResponse();
-                Stream reader = response.GetResponseStream();
-
-                //可根据实际保存为具体文件
-                FileStream writer = new FileStream(indexName + fileName, FileMode.OpenOrCreate, FileAccess.Write);
-                byte[] buff = new byte[10240];
-                int c = 0; //实际读取的字节数 
-                while ((c = reader.Read(buff, 0, buff.Length)) > 0)
+                HttpHelper http = new HttpHelper();
+                HttpItem item = new HttpItem()
                 {
-                    writer.Write(buff, 0, c);
+                    URL = strUrl,//URL     必需项
+                    Method = "get",//URL     可选项 默认为Get
+                    Timeout = 10000,//连接超时时间     可选项默认为100000
+                    IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
+                    UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
+                    Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
+                    ContentType = "*/*",//返回类型    可选项有默认值
+                    Referer = "http://www.furaffinity.net",//来源URL     可选项
+                    ResultType = ResultType.Byte,//返回数据类型，是Byte还是String
+                };
+                //得到HTML代码
+                HttpResult result = http.GetHtml(item);
+                //返回的Html内容
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Image img = byteArrayToImage(result.ResultByte);
+                    img.Save(indexName + fileName);
                 }
-                writer.Close();
-
-                reader.Close();
-                response.Close();
-
                 return null;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return e.Message;
             }
         }
 
-        public static CookieContainer SetCookies()
+        private static Image byteArrayToImage(byte[] Bytes)
         {
-            CookieContainer cc = new CookieContainer();
-            for (int i = 0; i < result.Count; ++i)
-            {
-                cc.Add(new System.Uri("http://www.furaffinity.net"), new Cookie(result[i][0], result[i][1]));
-            }
-            return cc;
+            MemoryStream ms = new MemoryStream(Bytes);
+            Image outputImg = Image.FromStream(ms);
+            return outputImg;
         }
     }
 }

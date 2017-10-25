@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
+using System.Text;
 /**
  * 分析网页内容并提取指定url的类
  * */

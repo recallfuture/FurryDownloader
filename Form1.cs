@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 
 namespace FurryDownloader
@@ -14,12 +15,14 @@ namespace FurryDownloader
         private int maxDownloadNum = 0;//默认下载总量，默认0，0为不限制
         private int downloadNum = 0;//已下载的图片个数
         private string filePath;//下载存放目录
+        private string cookie;//cookie
 
         private Thread newThread;//主循环线程
 
         public mainFrom()
         {
             InitializeComponent();
+            loadCookie();
         }
         //主循环函数，在单独的线程执行，否则会堵塞主线程
         private void loop()
@@ -50,6 +53,30 @@ namespace FurryDownloader
             {
                 AddItemToTextBox("下载结束\r\n");
             }
+        }
+        /// <summary>
+        /// 读取cookie
+        /// </summary>
+        private void loadCookie()
+        {
+            //如果已经存在cookie文件则读取
+            if (File.Exists("cookie.txt"))
+            {
+                InputCookie.Text = File.ReadAllText("cookie.txt");
+            }
+        }
+        /// <summary>
+        /// 保存cookie
+        /// </summary>
+        private void saveCookie()
+        {
+            //为空则不存储
+            if (cookie == "")
+                return;
+
+            FileStream fs = File.Create("cookie.txt");
+            byte[] utf8 = Encoding.UTF8.GetBytes(cookie);
+            fs.Write(utf8, 0, utf8.Length);
         }
         /// <summary>
         /// 获取用户给出的所有参数
@@ -93,27 +120,6 @@ namespace FurryDownloader
                 this.startPageNum, this.startPicNum, this.maxDownloadNum>0?this.maxDownloadNum.ToString():"不限量"));
         }
         /// <summary>
-        /// 初始化用户cookie
-        /// </summary>
-        private void initCookies()
-        {
-            string cookies = InputCookie.Text.Replace(" ", "");
-            List<string[]> result = new List<string[]>();
-
-            string[] lines = cookies.Split(';');
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string[] kv = lines[i].Split('=');
-                if (kv.Length != 2) break;
-
-                result.Add(kv);
-                //AddItemToTextBox(string.Format("key: {0}, value: {1}", kv[0], kv[1]));
-            }
-
-            AddItemToTextBox("用户信息加载完成");
-            Download.result = result;
-        }
-        /// <summary>
         /// 循环下载需要下载的页面，然后逐个下载图片
         /// </summary>
         /// <param name="str"></param>
@@ -138,7 +144,7 @@ namespace FurryDownloader
                 pageNum++;
 
                 //下载当前页
-                string nowPage = Download.GetGeneralContent(nowUrl);
+                string nowPage = Download.GetGeneralContent(nowUrl, cookie);
                 //检查网络连接
                 if (nowPage == null)
                 {
@@ -177,7 +183,7 @@ namespace FurryDownloader
                 return false;
 
             //获取详情页面信息
-            string tempPage = Download.GetGeneralContent(page);
+            string tempPage = Download.GetGeneralContent(page, cookie);
             if (tempPage == null)
             {
                 AddItemToTextBox("网络错误");
@@ -252,7 +258,8 @@ namespace FurryDownloader
             this.AcceptButton = this.ButtonCancle;
 
             //初始化下载参数
-            initCookies();
+            cookie = InputCookie.Text.Trim();
+            saveCookie();
             initDownload();
             //开始下载
             newThread = new Thread(loop);
