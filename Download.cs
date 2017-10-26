@@ -88,11 +88,10 @@ namespace FurryDownloader
                 };
                 //得到HTML代码
                 HttpResult result = http.GetHtml(item);
-                //返回的Html内容
+                //存储返回的文件内容
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Image img = byteArrayToImage(result.ResultByte);
-                    img.Save(indexName + fileName);
+                    File.WriteAllBytes(indexName + fileName, result.ResultByte);
                 }
                 return null;
             }
@@ -100,13 +99,6 @@ namespace FurryDownloader
             {
                 return e.Message;
             }
-        }
-
-        private static Image byteArrayToImage(byte[] Bytes)
-        {
-            MemoryStream ms = new MemoryStream(Bytes);
-            Image outputImg = Image.FromStream(ms);
-            return outputImg;
         }
     }
 }
