@@ -351,7 +351,8 @@ namespace FurryDownloader
                     input_name.Enabled = false;
                     checkBox1.Enabled = checkBox2.Enabled = false;
                     Browse.Enabled = false;
-                    InputPageNum.Enabled = InputPageNum.Enabled = InputMaxPicNum.Enabled = false;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = false;
+                    InputCookie.Enabled = false;
                 }
             }
             catch
@@ -381,7 +382,8 @@ namespace FurryDownloader
                     input_name.Enabled = true;
                     checkBox1.Enabled = checkBox2.Enabled = true;
                     Browse.Enabled = true;
-                    InputPageNum.Enabled = InputPageNum.Enabled = InputMaxPicNum.Enabled = true;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = true;
+                    InputCookie.Enabled = true;
                 }
             }
             catch
