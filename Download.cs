@@ -63,13 +63,16 @@ namespace FurryDownloader
                 {
                     Directory.CreateDirectory(indexName);
                 }
-                //如果已经存在则不再下载
-                if (File.Exists(indexName + fileName))
-                    return null;
-                else//提前占位
+                else
                 {
-                    FileStream fs = File.Create(indexName + fileName);
-                    fs.Close();
+                    //如果已经存在则不再下载
+                    if (File.Exists(indexName + fileName))
+                        return null;
+                    else//提前占位
+                    {
+                        FileStream fs = File.Create(indexName + fileName);
+                        fs.Close();
+                    }
                 }
 
 

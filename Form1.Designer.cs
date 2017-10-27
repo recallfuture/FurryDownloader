@@ -49,6 +49,10 @@
             this.FilePath = new System.Windows.Forms.TextBox();
             this.textBox = new System.Windows.Forms.TextBox();
             this.Help = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             info_name = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
@@ -61,7 +65,7 @@
             // 
             info_name.AutoSize = true;
             info_name.Font = new System.Drawing.Font("楷体", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            info_name.Location = new System.Drawing.Point(26, 28);
+            info_name.Location = new System.Drawing.Point(15, 33);
             info_name.Name = "info_name";
             info_name.Size = new System.Drawing.Size(235, 24);
             info_name.TabIndex = 0;
@@ -97,25 +101,25 @@
             // Expert
             // 
             Expert.AutoSize = true;
-            Expert.Location = new System.Drawing.Point(3, 67);
+            Expert.Location = new System.Drawing.Point(33, 67);
             Expert.Name = "Expert";
-            Expert.Size = new System.Drawing.Size(437, 15);
+            Expert.Size = new System.Drawing.Size(82, 15);
             Expert.TabIndex = 10;
-            Expert.Text = "高级选项：从第       页第      张开始，下载       张图片";
+            Expert.Text = "高级选项：";
             // 
             // input_name
             // 
             this.input_name.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.input_name.Location = new System.Drawing.Point(286, 27);
+            this.input_name.Location = new System.Drawing.Point(271, 28);
             this.input_name.Name = "input_name";
-            this.input_name.Size = new System.Drawing.Size(144, 30);
+            this.input_name.Size = new System.Drawing.Size(227, 30);
             this.input_name.TabIndex = 1;
             // 
             // ButtonEnter
             // 
-            this.ButtonEnter.Location = new System.Drawing.Point(495, 10);
+            this.ButtonEnter.Location = new System.Drawing.Point(544, 19);
             this.ButtonEnter.Name = "ButtonEnter";
-            this.ButtonEnter.Size = new System.Drawing.Size(75, 47);
+            this.ButtonEnter.Size = new System.Drawing.Size(108, 47);
             this.ButtonEnter.TabIndex = 2;
             this.ButtonEnter.Text = "开始";
             this.ButtonEnter.UseVisualStyleBackColor = true;
@@ -124,9 +128,9 @@
             // ButtonCancle
             // 
             this.ButtonCancle.Enabled = false;
-            this.ButtonCancle.Location = new System.Drawing.Point(495, 63);
+            this.ButtonCancle.Location = new System.Drawing.Point(544, 104);
             this.ButtonCancle.Name = "ButtonCancle";
-            this.ButtonCancle.Size = new System.Drawing.Size(75, 47);
+            this.ButtonCancle.Size = new System.Drawing.Size(108, 47);
             this.ButtonCancle.TabIndex = 3;
             this.ButtonCancle.Text = "取消";
             this.ButtonCancle.UseVisualStyleBackColor = true;
@@ -158,6 +162,10 @@
             // 
             this.panel.BackColor = System.Drawing.Color.Gainsboro;
             this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel.Controls.Add(this.label8);
+            this.panel.Controls.Add(this.label7);
+            this.panel.Controls.Add(this.label6);
+            this.panel.Controls.Add(this.label5);
             this.panel.Controls.Add(this.InputCookie);
             this.panel.Controls.Add(this.label4);
             this.panel.Controls.Add(this.InputStartPicNum);
@@ -170,22 +178,22 @@
             this.panel.Controls.Add(label2);
             this.panel.Controls.Add(this.checkBox1);
             this.panel.Controls.Add(this.checkBox2);
-            this.panel.Location = new System.Drawing.Point(30, 104);
+            this.panel.Location = new System.Drawing.Point(12, 104);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(459, 126);
+            this.panel.Size = new System.Drawing.Size(526, 126);
             this.panel.TabIndex = 6;
             // 
             // InputCookie
             // 
-            this.InputCookie.Location = new System.Drawing.Point(91, 93);
+            this.InputCookie.Location = new System.Drawing.Point(133, 93);
             this.InputCookie.Name = "InputCookie";
-            this.InputCookie.Size = new System.Drawing.Size(341, 25);
+            this.InputCookie.Size = new System.Drawing.Size(371, 25);
             this.InputCookie.TabIndex = 15;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 98);
+            this.label4.Location = new System.Drawing.Point(33, 96);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(82, 15);
             this.label4.TabIndex = 14;
@@ -193,7 +201,7 @@
             // 
             // InputStartPicNum
             // 
-            this.InputStartPicNum.Location = new System.Drawing.Point(208, 63);
+            this.InputStartPicNum.Location = new System.Drawing.Point(262, 62);
             this.InputStartPicNum.Name = "InputStartPicNum";
             this.InputStartPicNum.Size = new System.Drawing.Size(36, 25);
             this.InputStartPicNum.TabIndex = 13;
@@ -201,14 +209,14 @@
             // 
             // InputMaxPicNum
             // 
-            this.InputMaxPicNum.Location = new System.Drawing.Point(356, 62);
+            this.InputMaxPicNum.Location = new System.Drawing.Point(407, 62);
             this.InputMaxPicNum.Name = "InputMaxPicNum";
             this.InputMaxPicNum.Size = new System.Drawing.Size(40, 25);
             this.InputMaxPicNum.TabIndex = 12;
             // 
             // InputPageNum
             // 
-            this.InputPageNum.Location = new System.Drawing.Point(123, 63);
+            this.InputPageNum.Location = new System.Drawing.Point(173, 62);
             this.InputPageNum.Name = "InputPageNum";
             this.InputPageNum.Size = new System.Drawing.Size(40, 25);
             this.InputPageNum.TabIndex = 11;
@@ -216,7 +224,7 @@
             // 
             // Browse
             // 
-            this.Browse.Location = new System.Drawing.Point(356, 33);
+            this.Browse.Location = new System.Drawing.Point(445, 33);
             this.Browse.Name = "Browse";
             this.Browse.Size = new System.Drawing.Size(59, 25);
             this.Browse.TabIndex = 9;
@@ -229,37 +237,73 @@
             this.FilePath.Location = new System.Drawing.Point(133, 33);
             this.FilePath.Name = "FilePath";
             this.FilePath.ReadOnly = true;
-            this.FilePath.Size = new System.Drawing.Size(217, 25);
+            this.FilePath.Size = new System.Drawing.Size(306, 25);
             this.FilePath.TabIndex = 8;
             // 
             // textBox
             // 
             this.textBox.HideSelection = false;
-            this.textBox.Location = new System.Drawing.Point(30, 236);
+            this.textBox.Location = new System.Drawing.Point(12, 236);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
             this.textBox.ReadOnly = true;
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox.Size = new System.Drawing.Size(521, 305);
+            this.textBox.Size = new System.Drawing.Size(640, 305);
             this.textBox.TabIndex = 7;
             this.textBox.Text = resources.GetString("textBox.Text");
             // 
             // Help
             // 
-            this.Help.Location = new System.Drawing.Point(495, 143);
+            this.Help.Location = new System.Drawing.Point(544, 181);
             this.Help.Name = "Help";
-            this.Help.Size = new System.Drawing.Size(75, 49);
+            this.Help.Size = new System.Drawing.Size(108, 49);
             this.Help.TabIndex = 9;
             this.Help.Text = "帮助";
             this.Help.UseVisualStyleBackColor = true;
             this.Help.Click += new System.EventHandler(this.Help_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(130, 67);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 15);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "从第";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(219, 67);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 15);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "页第";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(304, 67);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(97, 15);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "张开始，下载";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(453, 67);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(22, 15);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "个";
             // 
             // mainFrom
             // 
             this.AcceptButton = this.ButtonEnter;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 553);
+            this.ClientSize = new System.Drawing.Size(664, 553);
             this.Controls.Add(this.Help);
             this.Controls.Add(label1);
             this.Controls.Add(this.textBox);
@@ -297,7 +341,10 @@
         private System.Windows.Forms.TextBox InputStartPicNum;
         private System.Windows.Forms.TextBox InputCookie;
         private System.Windows.Forms.Label label4;
-
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
     }
 }
 

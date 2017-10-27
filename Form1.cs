@@ -13,9 +13,11 @@ namespace FurryDownloader
         private int startPageNum = 1;//下载起始页的页号，默认1
         private int startPicNum = 1;//从当前页的第几张开始下载，默认1
         private int maxDownloadNum = 0;//默认下载总量，默认0，0为不限制
-        private int downloadNum = 0;//已下载的图片个数
+        private int fullDownloadNum = 0;//已下载的图片个数
         private string filePath;//下载存放目录
         private string cookie;//cookie
+
+        DateTime beforeDownload;//开始下载前的时间
 
         private Thread newThread;//主循环线程
 
@@ -28,31 +30,28 @@ namespace FurryDownloader
         private void loop()
         {
             bool isfinish = true;//判定是否成功下载
-            int totalDownload = 0;//最终下载数量的总和
 
             if (checkBox1.Checked)
             {
                 isfinish = isfinish && download("gallery");//如果下载时出错，则isfinish为false
-                totalDownload += downloadNum;
             }
 
             if (checkBox2.Checked && isfinish)//只有前面没出错，后面才能执行
             {
                 isfinish = isfinish && download("scraps");
-                totalDownload += downloadNum;
             }
 
-            //解冻所有控件
-            UnFreeze();
             if (isfinish)//如果成功下载
             {
-                AddItemToTextBox("下载完成,一共下载了" + totalDownload + "张图片\r\n");
+                AddItemToTextBox("下载完成,一共下载了" + fullDownloadNum + "张图片\r\n");
                 MessageBox.Show("下载完成");
             }
             else
             {
                 AddItemToTextBox("下载结束\r\n");
             }
+
+            endDownload();
         }
         /// <summary>
         /// 读取cookie
@@ -83,6 +82,8 @@ namespace FurryDownloader
         /// </summary>
         private void initDownload()
         {
+            //已下载总量
+            fullDownloadNum = 0;
             //获取画师名
             userName = input_name.Text.Trim();
             //获取下载目录
@@ -116,8 +117,10 @@ namespace FurryDownloader
             else this.maxDownloadNum = 0;
 
             //输出高级参数下载信息
-            AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载，下载数量为{2}。", 
-                this.startPageNum, this.startPicNum, this.maxDownloadNum>0?this.maxDownloadNum.ToString():"不限量"));
+            AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载，下载数量为{2}。\r\n", 
+                                            this.startPageNum, 
+                                            this.startPicNum, 
+                                            this.maxDownloadNum > 0 ? this.maxDownloadNum.ToString() : "不限量"));
         }
         /// <summary>
         /// 循环下载需要下载的页面，然后逐个下载图片
@@ -128,8 +131,6 @@ namespace FurryDownloader
             AddItemToTextBox(str + "下载开始");
 
             //初始化参数
-            int pageNum = startPageNum;//起始页数
-            downloadNum = 0;//已下载总量
             str = str + "/";//下载地址
             string[] allPages;//存储详情页地址
 
@@ -138,10 +139,8 @@ namespace FurryDownloader
             {
                 //存储当前页面地址
                 string nowUrl, errorInfo = null;
-                if (pageNum > 1)
-                    nowUrl = "http://www.furaffinity.net/" + str + userName + "/" + pageNum;
-                else nowUrl = "http://www.furaffinity.net/" + str + userName;
-                pageNum++;
+
+                nowUrl = "http://www.furaffinity.net/" + str + userName + "/" + startPageNum;
 
                 //下载当前页
                 string nowPage = Download.GetGeneralContent(nowUrl, cookie);
@@ -173,13 +172,14 @@ namespace FurryDownloader
                     if (!downloadPicture(allPages[i], str)) return false;
                 }
                 startPicNum = 1;
+                startPageNum++;
             }
             return true;
         }
-        private bool downloadPicture(string page, string str)
+        private bool downloadPicture(string page, string type)
         {
             //如果已经到达最大下载量，则停止下载
-            if (maxDownloadNum > 0 && downloadNum > maxDownloadNum)
+            if (maxDownloadNum > 0 && fullDownloadNum > maxDownloadNum)
                 return false;
 
             //获取详情页面信息
@@ -200,11 +200,35 @@ namespace FurryDownloader
             if (pictureName == null)
                 return false;
 
-            string message = Download.GetFileContent(pictureUrl, filePath + str, pictureName);
+            //开始下载
+            AddItemToTextBox("第" + startPageNum + "页" + "第" + startPicNum + "张下载开始");
+            AddItemToTextBox("文件名：" + pictureName);
+
+            //文件完整路径
+            string fullFilePath = filePath + type + pictureName;
+
+            //判断文件是否已经存在
+            if (File.Exists(fullFilePath))
+            {
+                AddItemToTextBox("文件已存在，跳过下载\r\n");
+                startPicNum++;
+                return true;
+            }
+
+            //获取下载前的时间
+            DateTime before = DateTime.Now;
+
+            string message = Download.GetFileContent(pictureUrl, filePath + type, pictureName);
             if (message == null)
             {
-                downloadNum++;
-                AddItemToTextBox("第" + downloadNum + "张" + pictureName + " 下载完成");
+                //获取下载后的时间
+                DateTime after = DateTime.Now;
+                //计算下载所用时间
+                TimeSpan speed = after - before;
+
+                AddItemToTextBox(speed.TotalSeconds + "秒下载完成\r\n" );
+                startPicNum++;
+                fullDownloadNum++;
                 return true;
             }
             else
@@ -236,6 +260,16 @@ namespace FurryDownloader
             }
         }
 
+        private void endDownload()
+        {
+            //解冻所有控件
+            UnFreeze();
+            
+            DateTime afterDownload = DateTime.Now;//下载结束后的时间
+            TimeSpan fullDownloadTime = afterDownload - beforeDownload;//总下载时间
+            AddItemToTextBox("共" + fullDownloadTime.Hours + "小时" + fullDownloadTime.Minutes + "分钟" + fullDownloadTime.Seconds + "秒");
+        }
+
         #region 按钮点击事件
         //确定按钮触发事件
         private void button1_Click(object sender, EventArgs e)
@@ -261,6 +295,7 @@ namespace FurryDownloader
             cookie = InputCookie.Text.Trim();
             saveCookie();
             initDownload();
+            beforeDownload = DateTime.Now;
             //开始下载
             newThread = new Thread(loop);
             newThread.Start();
@@ -286,7 +321,7 @@ namespace FurryDownloader
                     input_name.Enabled = false;
                     checkBox1.Enabled = checkBox2.Enabled = false;
                     Browse.Enabled = false;
-                    InputPageNum.Enabled = InputMaxPicNum.Enabled = false;
+                    InputPageNum.Enabled = InputPageNum.Enabled = InputMaxPicNum.Enabled = false;
                 }
             }
             catch
@@ -316,7 +351,7 @@ namespace FurryDownloader
                     input_name.Enabled = true;
                     checkBox1.Enabled = checkBox2.Enabled = true;
                     Browse.Enabled = true;
-                    InputPageNum.Enabled = InputMaxPicNum.Enabled = true;
+                    InputPageNum.Enabled = InputPageNum.Enabled = InputMaxPicNum.Enabled = true;
                 }
             }
             catch
@@ -334,7 +369,9 @@ namespace FurryDownloader
             //修改回车焦点
             this.AcceptButton = this.ButtonEnter;
 
-            AddItemToTextBox("下载终止，到此为止共下载" + downloadNum + "张图片");
+            AddItemToTextBox("\r\n下载终止，到此为止共下载" + fullDownloadNum + "张图片");
+
+            endDownload();
         }
         //浏览按钮触发事件
         private void button1_Click_1(object sender, EventArgs e)
@@ -353,9 +390,7 @@ namespace FurryDownloader
                         "请保证网络连接通畅\r\n" +
                         "必要时请给于软件管理员权限\r\n" +
                         "下载图片不成功时，请开启vpn后重新下载\r\n" +
-                        "本软件仅供交流，请勿用于商业用途\r\n" + 
-                        "版本号 v3.3\r\n" +
-                        string.Format("Operating System: {0} ({1})", Environment.OSVersion.VersionString, Environment.OSVersion.Version.ToString());
+                        "本软件仅供交流，请勿用于商业用途\r\n";
 
             MessageBox.Show(help,"注意事项");
         }
