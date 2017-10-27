@@ -6,7 +6,7 @@ using System.Text;
  * */
 namespace FurryDownloader
 {
-    class Analyze
+    public class Analyze
     {
         /// <summary>
         /// 检查是否存在此用户名
@@ -26,13 +26,13 @@ namespace FurryDownloader
         /// </summary>
         /// <param name="page">页面信息</param>
         /// <returns>返回错误信息</returns>
-        public static string checkPage(string page)
+        public static State checkPage(string page)
         {
             if (page.Contains("There are no submissions to list"))
-                return "此页无任何图片";
+                return new State(StateCode.finish,"此页无任何图片");
             else if (page.Contains("has elected to make their content available to registered users only."))
-                return "很抱歉，此页需要登录授权才可查看，请用IE浏览器打开http://www.furaffinity.net/并登录后重新下载。【提示：必须用IE登录才可以，如果依旧不成功，请给予本软件管理员权限】";
-            else return null;
+                return new State(StateCode.error, "很抱歉，此页需要登录授权才可查看，请用IE浏览器打开http://www.furaffinity.net/并登录后重新下载。【提示：必须用IE登录才可以，如果依旧不成功，请给予本软件管理员权限】");
+            else return new State(StateCode.ok);
         }
 
         /// <summary>
