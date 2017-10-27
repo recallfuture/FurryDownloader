@@ -129,6 +129,7 @@ namespace FurryDownloader
         private bool download(string str)
         {
             AddItemToTextBox(str + "下载开始");
+            initDownload();
 
             //初始化参数
             str = str + "/";//下载地址
@@ -294,7 +295,6 @@ namespace FurryDownloader
             //初始化下载参数
             cookie = InputCookie.Text.Trim();
             saveCookie();
-            initDownload();
             beforeDownload = DateTime.Now;
             //开始下载
             newThread = new Thread(loop);
