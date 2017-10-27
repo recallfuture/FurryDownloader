@@ -76,6 +76,7 @@ namespace FurryDownloader
             FileStream fs = File.Create("cookie.txt");
             byte[] utf8 = Encoding.UTF8.GetBytes(cookie);
             fs.Write(utf8, 0, utf8.Length);
+            fs.Close();
         }
         /// <summary>
         /// 获取用户给出的所有参数
