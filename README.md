@@ -16,3 +16,7 @@
 例：a=asdasdasdasdasdasdasd;b=3bb90133-4fed-405d-bf0d-4391baa8ed20; __cfduid=dee5d6da0b534f590c423cc6a50c753e51486115641;
 
 其他使用说明在应用内有提示。
+
+-----------
+
+引用代码：[HttpHelper.cs](http://www.sufeinet.com/thread-3-1-1.html)
