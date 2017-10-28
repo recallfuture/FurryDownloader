@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FurryDownloader
+﻿namespace FurryDownloader
 {
+    /// <summary>
+    /// 状态信息类
+    /// </summary>
     public class State
     {
         public StateCode code;
@@ -21,7 +19,9 @@ namespace FurryDownloader
             this.message = message;
         }
     }
-
+    /// <summary>
+    /// 状态枚举
+    /// </summary>
     public enum StateCode {
         ok,
         error,

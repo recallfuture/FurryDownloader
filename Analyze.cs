@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Text;
 /**
- * 分析网页内容并提取指定url的类
+ * 分析网页内容并提取指定内容的类
  * */
 namespace FurryDownloader
 {
@@ -25,7 +24,7 @@ namespace FurryDownloader
         /// 检查是否存在此页,存在则返回true
         /// </summary>
         /// <param name="page">页面信息</param>
-        /// <returns>返回错误信息</returns>
+        /// <returns>成功返回ok，失败返回错误信息</returns>
         public static State checkPage(string page)
         {
             if (page.Contains("There are no submissions to list"))

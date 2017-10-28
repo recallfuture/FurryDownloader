@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Net.Sockets;
-using System.Collections.Generic;
-using System.Drawing;
 
 /*
  * 下载网页或图片的类
@@ -53,7 +49,6 @@ namespace FurryDownloader
                 return new State(StateCode.error, e.Message);
             }
         }
-
         /// <summary>
         /// 下载并保存图片
         /// </summary>
@@ -81,7 +76,6 @@ namespace FurryDownloader
                         fs.Close();
                     }
                 }
-
 
                 HttpHelper http = new HttpHelper();
                 HttpItem item = new HttpItem()
