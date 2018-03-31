@@ -9,6 +9,8 @@ namespace FurryDownloader
 {
     class Download
     {
+        private static HttpHelper http = new HttpHelper();
+
         /// <summary>
         /// 下载所给网址指向的页面信息
         /// </summary>
@@ -18,7 +20,6 @@ namespace FurryDownloader
         {
             try
             {
-                HttpHelper http = new HttpHelper();
                 HttpItem item = new HttpItem()
                 {
                     URL = strUrl,//URL     必需项
@@ -77,7 +78,6 @@ namespace FurryDownloader
                     }
                 }
 
-                HttpHelper http = new HttpHelper();
                 HttpItem item = new HttpItem()
                 {
                     URL = strUrl,//URL     必需项

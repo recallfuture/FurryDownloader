@@ -275,7 +275,7 @@ namespace FurryDownloader
             bool isfinish = true;//判定是否成功下载
             if (checkBox1.Checked)
             {
-                State state = download("gallery");
+                State state = download("gallery\\");
                 if (state.code == StateCode.error)
                 {
                     isfinish = false;//如果下载时出错，则isfinish为false
@@ -285,7 +285,7 @@ namespace FurryDownloader
             //只有前面没出错，后面才能执行
             if (isfinish && checkBox2.Checked)
             {
-                State state = download("scraps");
+                State state = download("scraps\\");
                 if (state.code == StateCode.error)
                 {
                     isfinish = false;//如果下载时出错，则isfinish为false
