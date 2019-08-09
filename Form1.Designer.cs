@@ -40,8 +40,10 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.panel = new System.Windows.Forms.Panel();
-            this.InputCookie = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.InputStartPicNum = new System.Windows.Forms.TextBox();
             this.InputMaxPicNum = new System.Windows.Forms.TextBox();
             this.InputPageNum = new System.Windows.Forms.TextBox();
@@ -49,10 +51,7 @@
             this.FilePath = new System.Windows.Forms.TextBox();
             this.textBox = new System.Windows.Forms.TextBox();
             this.Help = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.ButtonLogin = new System.Windows.Forms.Button();
             info_name = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
@@ -128,7 +127,7 @@
             // ButtonCancle
             // 
             this.ButtonCancle.Enabled = false;
-            this.ButtonCancle.Location = new System.Drawing.Point(544, 104);
+            this.ButtonCancle.Location = new System.Drawing.Point(544, 73);
             this.ButtonCancle.Name = "ButtonCancle";
             this.ButtonCancle.Size = new System.Drawing.Size(108, 47);
             this.ButtonCancle.TabIndex = 3;
@@ -166,8 +165,6 @@
             this.panel.Controls.Add(this.label7);
             this.panel.Controls.Add(this.label6);
             this.panel.Controls.Add(this.label5);
-            this.panel.Controls.Add(this.InputCookie);
-            this.panel.Controls.Add(this.label4);
             this.panel.Controls.Add(this.InputStartPicNum);
             this.panel.Controls.Add(this.InputMaxPicNum);
             this.panel.Controls.Add(this.InputPageNum);
@@ -183,21 +180,41 @@
             this.panel.Size = new System.Drawing.Size(526, 126);
             this.panel.TabIndex = 6;
             // 
-            // InputCookie
+            // label8
             // 
-            this.InputCookie.Location = new System.Drawing.Point(133, 93);
-            this.InputCookie.Name = "InputCookie";
-            this.InputCookie.Size = new System.Drawing.Size(371, 25);
-            this.InputCookie.TabIndex = 15;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(453, 67);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(22, 15);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "个";
             // 
-            // label4
+            // label7
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(33, 96);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(82, 15);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "自动登录：";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(304, 67);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(97, 15);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "张开始，下载";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(219, 67);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 15);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "页第";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(130, 67);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 15);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "从第";
             // 
             // InputStartPicNum
             // 
@@ -262,41 +279,15 @@
             this.Help.UseVisualStyleBackColor = true;
             this.Help.Click += new System.EventHandler(this.Help_Click);
             // 
-            // label5
+            // ButtonLogin
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(130, 67);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 15);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "从第";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(219, 67);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 15);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "页第";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(304, 67);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(97, 15);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "张开始，下载";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(453, 67);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(22, 15);
-            this.label8.TabIndex = 19;
-            this.label8.Text = "个";
+            this.ButtonLogin.Location = new System.Drawing.Point(544, 127);
+            this.ButtonLogin.Name = "ButtonLogin";
+            this.ButtonLogin.Size = new System.Drawing.Size(108, 47);
+            this.ButtonLogin.TabIndex = 10;
+            this.ButtonLogin.Text = "登录FA";
+            this.ButtonLogin.UseVisualStyleBackColor = true;
+            this.ButtonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
             // mainFrom
             // 
@@ -304,6 +295,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 553);
+            this.Controls.Add(this.ButtonLogin);
             this.Controls.Add(this.Help);
             this.Controls.Add(label1);
             this.Controls.Add(this.textBox);
@@ -339,12 +331,11 @@
         private System.Windows.Forms.TextBox InputMaxPicNum;
         private System.Windows.Forms.TextBox InputPageNum;
         private System.Windows.Forms.TextBox InputStartPicNum;
-        private System.Windows.Forms.TextBox InputCookie;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button ButtonLogin;
     }
 }
 

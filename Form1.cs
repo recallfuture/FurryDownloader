@@ -11,7 +11,7 @@ namespace FurryDownloader
         //基本参数
         private string userName;//作者名
         private string filePath;//下载存放目录
-        private string cookie;//cookie
+        private string cookie = "";//cookie
 
         //高级参数
         private int startPageNum = 1;//下载起始页的页号，默认1
@@ -36,10 +36,12 @@ namespace FurryDownloader
         /// </summary>
         private void loadCookie()
         {
+            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string cookiePath = documentPath + "\\FaDownloader\\cookie.txt";
             //如果已经存在cookie文件则读取
-            if (File.Exists("cookie.txt"))
+            if (File.Exists(cookiePath))
             {
-                InputCookie.Text = File.ReadAllText("cookie.txt");
+                cookie = File.ReadAllText(cookiePath);
             }
         }
         /// <summary>
@@ -51,10 +53,16 @@ namespace FurryDownloader
             if (cookie == "")
                 return;
 
-            FileStream fs = File.Create("cookie.txt");
-            byte[] utf8 = Encoding.UTF8.GetBytes(cookie);
-            fs.Write(utf8, 0, utf8.Length);
-            fs.Close();
+            // 创建文档路径
+            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string cookiePath = documentPath + "\\FaDownloader";
+            string cookieFile = cookiePath + "\\cookie.txt";
+            Directory.CreateDirectory(cookiePath);
+            if (!File.Exists(cookieFile))
+            {
+                File.Create(cookieFile).Close();
+            }
+            File.WriteAllText(cookieFile, cookie);
         }
         #endregion
         #region 控件相关
@@ -102,7 +110,6 @@ namespace FurryDownloader
                     checkBox1.Enabled = checkBox2.Enabled = false;
                     Browse.Enabled = false;
                     InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = false;
-                    InputCookie.Enabled = false;
                 }
             }
             catch
@@ -133,7 +140,6 @@ namespace FurryDownloader
                     checkBox1.Enabled = checkBox2.Enabled = true;
                     Browse.Enabled = true;
                     InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = true;
-                    InputCookie.Enabled = true;
                 }
             }
             catch
@@ -184,6 +190,23 @@ namespace FurryDownloader
                 FilePath.Text = filePath;
             }
         }
+        /// <summary>
+        /// 登录fa
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonLogin_Click(object sender, EventArgs e)
+        {
+            FaLogin faLogin = new FaLogin();
+            faLogin.ShowDialog();
+            if (faLogin.Cookie != null && faLogin.Cookie != "")
+            {
+                cookie = faLogin.Cookie;
+                saveCookie();
+                MessageBox.Show("登录成功，已保存身份信息以供下次使用");
+            }
+            faLogin.Dispose();
+        }
         //帮助按钮触发事件
         private void Help_Click(object sender, EventArgs e)
         {
@@ -204,7 +227,7 @@ namespace FurryDownloader
         {
             singleDownloadNum = 0;
             //获取画师名
-            userName = input_name.Text.Trim();
+            userName = input_name.Text.Trim().Replace("_", "");
             //获取下载目录
             if (FilePath.Text == "") filePath = ".\\" + userName + "\\";
             else filePath = FilePath.Text + "\\" + userName + "\\";
@@ -243,7 +266,6 @@ namespace FurryDownloader
             this.AcceptButton = this.ButtonCancle;
 
             //初始化下载参数
-            cookie = InputCookie.Text.Trim();
             saveCookie();
 
             //下载总数和跳过总数清零
