@@ -133,16 +133,13 @@
     <value>False</value>
   </metadata>
   <data name="textBox.Text" xml:space="preserve">
-    <value>制作者：回夙未来    qq：1498881550
+    <value>我的邮箱：recallsufuture@gmail.com
 默认下载到当前目录下以作者名命名的文件夹里。
 默认每页48张图片。默认将所选图集的图片全部下载。
 高级参数如果留空或填0，都会使用默认参数下载。
-如果想下载18x内容，请在自动登陆一栏填写登录后的cookie即可。
+如果想下载需登陆后查看的内容，请在右侧登录。
 
-cookie格式
-键值对形式，key=value;key=value;
-必须有的三个键:a,b,__cfduid（缺一不可，其他的键则可以省略,分号不可以省略）
-例：a=asdasdasdasdasdasdasd;b=3bb90133-4fed-405d-bf0d-4391baa8ed20; __cfduid=dee5d6da0b534f590c423cc6a50c753e51486115641;
+如果嫌速度慢，可以多开几个同时下载。
 
 
 </value>
