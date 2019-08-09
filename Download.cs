@@ -34,6 +34,7 @@ namespace FurryDownloader
                     ContentType = "text/html",//返回类型    可选项有默认值
                     Referer = "http://www.furaffinity.net",//来源URL     可选项
                     ResultType = ResultType.String,//返回数据类型，是Byte还是String
+                    // ProxyIp = "127.0.0.1:1081",
                 };
                 //得到HTML代码
                 HttpResult result = http.GetHtml(item);
@@ -89,6 +90,7 @@ namespace FurryDownloader
                     ContentType = "*/*",//返回类型    可选项有默认值
                     Referer = "http://www.furaffinity.net",//来源URL     可选项
                     ResultType = ResultType.Byte,//返回数据类型，是Byte还是String
+                    // ProxyIp = "127.0.0.1:1081",
                 };
                 //得到HTML代码
                 HttpResult result = http.GetHtml(item);

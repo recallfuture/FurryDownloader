@@ -61,7 +61,7 @@ namespace FurryDownloader
         public static string getPictureUrl(string page)
         {
             //<a href="//d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png">Download
-            MatchCollection matchs = Regex.Matches(page, @"<a href=.*>Download");
+            MatchCollection matchs = Regex.Matches(page, @"href="".*?"".*?>Download");
 
             if (matchs.Count == 0)
                 return null;
