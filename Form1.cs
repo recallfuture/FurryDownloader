@@ -392,20 +392,44 @@ namespace FurryDownloader
             if (maxDownloadNum > 0 && singleDownloadNum >= maxDownloadNum)
                 return new State(StateCode.finish);
 
-            //获取详情页面信息
-            pageState = Download.GetGeneralContent(pageUrl, cookie);
-            if (pageState.code == StateCode.error)
+            // 获取缓存路径
+            string[] arr = pageUrl.Split('/');
+            string pageId = arr[arr.Length-2];
+            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string cachePath = documentPath + "\\FaDownloader\\cache\\";
+            string cacheFile = cachePath + pageId;
+            Directory.CreateDirectory(cachePath);
+            string pictureUrl = null;
+
+            // 从缓存中获取地址
+            if (File.Exists(cacheFile))
             {
-                AddItemToTextBox(pageState.message);
-                return new State(StateCode.error);
+                pictureUrl = File.ReadAllText(cacheFile);
+                if (pictureUrl == null || pictureUrl == "")
+                {
+                    pictureUrl = null;
+                }
             }
 
-            //获取图片下载地址
-            string pictureUrl = Analyze.getPictureUrl(pageState.message);
             if (pictureUrl == null)
             {
-                AddItemToTextBox("无法找到下载地址");
-                return new State(StateCode.error);
+                //获取详情页面信息
+                pageState = Download.GetGeneralContent(pageUrl, cookie);
+                if (pageState.code == StateCode.error)
+                {
+                    AddItemToTextBox(pageState.message);
+                    return new State(StateCode.error);
+                }
+
+                //获取图片下载地址
+                pictureUrl = Analyze.getPictureUrl(pageState.message);
+                if (pictureUrl == null)
+                {
+                    AddItemToTextBox("无法找到下载地址");
+                    return new State(StateCode.error);
+                }
+                File.Create(cacheFile).Close();
+                File.WriteAllText(cacheFile, pictureUrl);
             }
 
             //获取文件名字
