@@ -93,6 +93,7 @@
     <Compile Include="FaDownloader.Designer.cs">
       <DependentUpon>FaDownloader.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\DownloadManager.cs" />
     <Compile Include="src\FullWebBrowserCookie.cs" />
     <Compile Include="src\HttpHelper.cs" />
     <Compile Include="Program.cs" />

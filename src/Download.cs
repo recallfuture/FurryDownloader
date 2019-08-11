@@ -58,54 +58,47 @@ namespace FurryDownloader
         /// <param name="indexName">存储目录</param>
         /// <param name="fileName">文件名</param>
         /// <returns>成功则返回null，失败则返回失败信息</returns>
-        public static State GetFileContent(string strUrl,string indexName, string fileName)
+        public static State GetFileContent(string strUrl, string indexName, string fileName)
         {
-            try
+            //创建存放文件夹
+            if (Directory.Exists(indexName) == false)//如果不存在就创建file文件夹
             {
-                //创建存放文件夹
-                if (Directory.Exists(indexName) == false)//如果不存在就创建file文件夹
+                Directory.CreateDirectory(indexName);
+            }
+            else
+            {
+                //如果已经存在则不再下载
+                if (File.Exists(indexName + fileName))
+                    return null;
+                else//提前占位
                 {
-                    Directory.CreateDirectory(indexName);
+                    FileStream fs = File.Create(indexName + fileName);
+                    fs.Close();
                 }
-                else
-                {
-                    //如果已经存在则不再下载
-                    if (File.Exists(indexName + fileName))
-                        return null;
-                    else//提前占位
-                    {
-                        FileStream fs = File.Create(indexName + fileName);
-                        fs.Close();
-                    }
-                }
+            }
 
-                HttpItem item = new HttpItem()
-                {
-                    URL = strUrl,//URL     必需项
-                    Method = "get",//URL     可选项 默认为Get
-                    Timeout = 10000,//连接超时时间     可选项默认为100000
-                    IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
-                    UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
-                    Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
-                    ContentType = "*/*",//返回类型    可选项有默认值
-                    Referer = "http://www.furaffinity.net",//来源URL     可选项
-                    ResultType = ResultType.Byte,//返回数据类型，是Byte还是String
-                    // ProxyIp = "127.0.0.1:1081",
-                };
-                //得到HTML代码
-                HttpResult result = http.GetHtml(item);
-                //存储返回的文件内容
-                if (result.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    File.WriteAllBytes(indexName + fileName, result.ResultByte);
-                    return new State(StateCode.ok);
-                }
-                return new State(StateCode.error, "网络错误");
-            }
-            catch(Exception e)
+            HttpItem item = new HttpItem()
             {
-                return new State(StateCode.error, e.Message);
+                URL = strUrl,//URL     必需项
+                Method = "get",//URL     可选项 默认为Get
+                Timeout = 10000,//连接超时时间     可选项默认为100000
+                IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
+                UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
+                Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
+                ContentType = "*/*",//返回类型    可选项有默认值
+                Referer = "http://www.furaffinity.net",//来源URL     可选项
+                ResultType = ResultType.Byte,//返回数据类型，是Byte还是String
+                                             // ProxyIp = "127.0.0.1:1081",
+            };
+            //得到HTML代码
+            HttpResult result = http.GetHtml(item);
+            //存储返回的文件内容
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                File.WriteAllBytes(indexName + fileName, result.ResultByte);
+                return new State(StateCode.ok);
             }
+            return new State(StateCode.error, "网络错误");
         }
     }
 }

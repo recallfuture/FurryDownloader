@@ -122,7 +122,7 @@
             this.ButtonEnter.TabIndex = 2;
             this.ButtonEnter.Text = "开始";
             this.ButtonEnter.UseVisualStyleBackColor = true;
-            this.ButtonEnter.Click += new System.EventHandler(this.button1_Click);
+            this.ButtonEnter.Click += new System.EventHandler(this.ButtonStart_Click);
             // 
             // ButtonCancle
             // 
@@ -247,7 +247,7 @@
             this.Browse.TabIndex = 9;
             this.Browse.Text = "浏览";
             this.Browse.UseVisualStyleBackColor = true;
-            this.Browse.Click += new System.EventHandler(this.button1_Click_1);
+            this.Browse.Click += new System.EventHandler(this.ButtonFolder_Click);
             // 
             // FilePath
             // 

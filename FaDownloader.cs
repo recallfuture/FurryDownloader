@@ -17,7 +17,7 @@ namespace FurryDownloader
         private int startPageNum = 1;//下载起始页的页号，默认1
         private int startPicNum = 1;//从当前页的第几张开始下载，默认1
         private int maxDownloadNum = 0;//默认下载总量，默认0，0为不限制
-        
+
         private int fullDownloadNum = 0;//已下载的图片个数
         private int skipDownloadNum = 0;//已跳过下载的图片个数
         private int singleDownloadNum = 0;//单图册的下载量
@@ -148,7 +148,7 @@ namespace FurryDownloader
             }
         }
         //确定按钮触发事件
-        private void button1_Click(object sender, EventArgs e)
+        private void ButtonStart_Click(object sender, EventArgs e)
         {
             //开始之前的检查部分
             if (input_name.Text == "")
@@ -181,7 +181,7 @@ namespace FurryDownloader
             endDownload();
         }
         //浏览按钮触发事件
-        private void button1_Click_1(object sender, EventArgs e)
+        private void ButtonFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
@@ -282,6 +282,7 @@ namespace FurryDownloader
         {
             //解冻所有控件
             UnFreeze();
+            DownloadManager.StopAll();
 
             DateTime afterDownload = DateTime.Now;//下载结束后的时间
             TimeSpan fullDownloadTime = afterDownload - beforeDownload;//总下载时间
@@ -313,18 +314,10 @@ namespace FurryDownloader
                     isfinish = false;//如果下载时出错，则isfinish为false
                 }
             }
-            
+
             endDownload();
 
-            if (isfinish)//如果成功下载
-            {
-                AddItemToTextBox("下载完成,成功下载了" + fullDownloadNum + "张图片，跳过了" + skipDownloadNum + "张图片\r\n");
-                MessageBox.Show("下载完成");
-            }
-            else
-            {
-                AddItemToTextBox("下载结束\r\n");
-            }
+            AddItemToTextBox("正在结束下载\r\n");
         }
         /// <summary>
         /// 下载图集
@@ -344,7 +337,7 @@ namespace FurryDownloader
                 State pageState;
                 //存储当前页面地址
                 string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
-                                                type, 
+                                                type,
                                                 userName,
                                                 startPageNum);
 
@@ -416,7 +409,7 @@ namespace FurryDownloader
 
             // 获取缓存路径
             string[] arr = pageUrl.Split('/');
-            string pageId = arr[arr.Length-2];
+            string pageId = arr[arr.Length - 2];
             string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             string cachePath = documentPath + "\\FaDownloader\\cache\\";
             string cacheFile = cachePath + pageId;
@@ -457,9 +450,11 @@ namespace FurryDownloader
             //获取文件名字
             string pictureName = Analyze.getFilename(pictureUrl);
 
+            /*
             //开始下载
             AddItemToTextBox("第" + startPageNum + "页" + "第" + startPicNum + "张下载开始");
             AddItemToTextBox("文件名：" + pictureName);
+            */
 
             //文件完整路径
             string fullFilePath = filePath + type + pictureName;
@@ -474,6 +469,39 @@ namespace FurryDownloader
                 return new State(StateCode.ok);
             }
 
+            // 使用多线程下载
+            Task task = new Task()
+            {
+                pageNum = startPageNum,
+                picNum = startPicNum,
+
+                Url = pictureUrl,
+                FilePath = filePath + type,
+                FileName = pictureName,
+                TaskStart = new Task.TaskStartDelegate(delegate (int id, Task t)
+                {
+                    // 下载开始
+                }),
+                TaskStop = new Task.TaskStopDelegate(delegate (int id, Task t)
+                {
+                    // AddItemToTextBox("下载被终止" + t.FileName);
+                }),
+                TaskFinish = new Task.TaskFinishDelegate(delegate (int id, Task t)
+                {
+                    DateTime now = DateTime.Now;
+                    //计算下载所用时间
+                    TimeSpan time = now - beforeDownload;
+
+                    AddItemToTextBox(String.Format("第{0}页第{1}张下载完成，已经过{2}秒", t.pageNum, t.picNum, time.TotalSeconds));
+                }),
+                TaskFail = new Task.TaskFailDelegate(delegate (int id, Task t)
+                {
+                    AddItemToTextBox(String.Format("第{0}页第{1}张下载失败", t.pageNum, t.picNum));
+                }),
+            };
+            DownloadManager.Add(task);
+
+            /*
             //获取下载前的时间
             DateTime before = DateTime.Now;
 
@@ -490,6 +518,8 @@ namespace FurryDownloader
             TimeSpan speed = after - before;
 
             AddItemToTextBox(speed.TotalSeconds + "秒下载完成\r\n" );
+            */
+
             startPicNum++;
             fullDownloadNum++;
             singleDownloadNum++;
