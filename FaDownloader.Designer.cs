@@ -183,7 +183,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(97, 15);
             this.label7.TabIndex = 18;
-            this.label7.Text = "张开始，下载";
+            this.label7.Text = "张开始下载";
             // 
             // label6
             // 
@@ -248,7 +248,7 @@
             this.textBox.Size = new System.Drawing.Size(640, 305);
             this.textBox.TabIndex = 7;
             this.textBox.Text = "我的邮箱：recallsufuture@gmail.com\r\n默认下载到当前目录下以作者名命名的文件夹里。\r\n默认每页48张图片。默认将所选图集的图片全部下载。\r" +
-    "\n高级参数如果留空或填0，都会使用默认参数下载。\r\n如果想下载需登陆后查看的内容，请在右侧登录。\r\n\r\n如果嫌速度慢，可以多开几个同时下载。\r\n\r\n\r\n";
+    "\n高级参数如果留空或填0，都会使用默认参数下载。\r\n如果想下载需登陆后查看的内容，请在右侧登录。\r\n\r\n";
             // 
             // Help
             // 
