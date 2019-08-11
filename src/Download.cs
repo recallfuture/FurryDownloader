@@ -7,7 +7,7 @@ using System.Text;
  * */
 namespace FurryDownloader
 {
-    class Download
+    class Request
     {
         private static HttpHelper http = new HttpHelper();
 

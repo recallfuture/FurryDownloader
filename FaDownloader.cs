@@ -349,7 +349,7 @@ namespace FurryDownloader
                                                 startPageNum);
 
                 //下载当前页
-                pageState = Download.GetGeneralContent(nowUrl, cookie);
+                pageState = Request.GetGeneralContent(nowUrl, cookie);
                 if (pageState.code == StateCode.error)
                 {
                     AddItemToTextBox(pageState.message);
@@ -436,7 +436,7 @@ namespace FurryDownloader
             if (pictureUrl == null)
             {
                 //获取详情页面信息
-                pageState = Download.GetGeneralContent(pageUrl, cookie);
+                pageState = Request.GetGeneralContent(pageUrl, cookie);
                 if (pageState.code == StateCode.error)
                 {
                     AddItemToTextBox(pageState.message);
@@ -477,7 +477,7 @@ namespace FurryDownloader
             //获取下载前的时间
             DateTime before = DateTime.Now;
 
-            pageState = Download.GetFileContent(pictureUrl, filePath + type, pictureName);
+            pageState = Request.GetFileContent(pictureUrl, filePath + type, pictureName);
             if (pageState.code == StateCode.error)
             {
                 AddItemToTextBox("下载失败,原因是：" + pageState.message);
