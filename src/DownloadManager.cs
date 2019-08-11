@@ -62,21 +62,21 @@ namespace FurryDownloader
 
         public void Start(Object o)
         {
-            // 检查是否已经停止
-            if (task.Status == TaskStatus.Stop)
-            {
-                task.TaskStop(taskId, task);
-                return;
-            }
-
-            task.TaskStart(taskId, task);
-
             try
             {
+                // 检查是否已经停止
+                if (task.Status == TaskStatus.Stop)
+                {
+                    task.TaskStop(taskId, task);
+                    task.Status = TaskStatus.Finish;
+                    return;
+                }
+
+                task.TaskStart(taskId, task);
                 DownloadAndSave(task.Url, task.FilePath, task.FileName);
                 Console.WriteLine(taskId + "下载完成");
-                DownloadManager.Remove(taskId);
                 task.TaskFinish(taskId, task);
+                task.Status = TaskStatus.Finish;
             }
             catch (Exception e)
             {
@@ -92,6 +92,7 @@ namespace FurryDownloader
                 {
                     Console.WriteLine(String.Format("[{0}]下载失败已超过三次，请检查网络是否可用", taskId, retry));
                     task.TaskFail(taskId, task);
+                    task.Status = TaskStatus.Finish;
                 }
             }
         }
@@ -251,9 +252,32 @@ namespace FurryDownloader
         /// </summary>
         public static void StopAll()
         {
+            // 将所有线程标志成stop
             foreach (var task in tasks.Values)
             {
-                task.Status = TaskStatus.Stop;
+                if (task.Status != TaskStatus.Finish)
+                    task.Status = TaskStatus.Stop;
+            }
+
+            FinishAll();
+        }
+
+        /// <summary>
+        /// 等待全部完成
+        /// </summary>
+        public static void FinishAll()
+        {
+            // 循环判定直到所有任务都完成
+            bool flag = true;
+            while (flag)
+            {
+                flag = false;
+                foreach (var task in tasks.Values)
+                {
+                    if (task.Status != TaskStatus.Finish)
+                        flag = true;
+                }
+                Thread.Sleep(500);
             }
         }
     }

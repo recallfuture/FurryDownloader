@@ -132,18 +132,6 @@
   <metadata name="Expert.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <data name="textBox.Text" xml:space="preserve">
-    <value>我的邮箱：recallsufuture@gmail.com
-默认下载到当前目录下以作者名命名的文件夹里。
-默认每页48张图片。默认将所选图集的图片全部下载。
-高级参数如果留空或填0，都会使用默认参数下载。
-如果想下载需登陆后查看的内容，请在右侧登录。
-
-如果嫌速度慢，可以多开几个同时下载。
-
-
-</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

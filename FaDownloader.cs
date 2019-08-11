@@ -3,41 +3,73 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace FurryDownloader
 {
     public partial class mainFrom : Form
     {
         //基本参数
-        private string userName;//作者名
-        private string filePath;//下载存放目录
-        private string cookie = "";//cookie
+        private string userName;            // 作者名
+        private string filePath;            // 下载存放目录
+        private string cookie = "";         // cookie
 
         //高级参数
-        private int startPageNum = 1;//下载起始页的页号，默认1
-        private int startPicNum = 1;//从当前页的第几张开始下载，默认1
-        private int maxDownloadNum = 0;//默认下载总量，默认0，0为不限制
+        private int startPageNum = 1;       // 下载起始页的页号，默认1
+        private int startPicNum = 1;        // 从当前页的第几张开始下载，默认1
 
-        private int fullDownloadNum = 0;//已下载的图片个数
-        private int skipDownloadNum = 0;//已跳过下载的图片个数
-        private int singleDownloadNum = 0;//单图册的下载量
+        private int totalDownloadNum = 0;   // 已下载的图片个数
+        private int skipDownloadNum = 0;    // 已跳过下载的图片个数
 
-        private Thread newThread;//主循环线程
-        private DateTime beforeDownload;//开始下载前的时间
+        private Thread workerThread;        // 主循环线程
+        private DateTime startTime;         // 开始下载前的时间
+
+        private bool isStop = false;
+
+        private HttpHelper http = new HttpHelper();
+        private string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\FaDownloader\\";
 
         public mainFrom()
         {
             InitializeComponent();
-            loadCookie();
+            LoadCookie();
         }
+
+        /// <summary>
+        /// 创建文件夹
+        /// </summary>
+        /// <param name="dir"></param>
+        private void CreateDir(string dir)
+        {
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+        }
+
+
+        /// <summary>
+        /// 创建文件
+        /// </summary>
+        /// <param name="path"></param>
+        private void CreateFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+            }
+        }
+
+
         #region cookie文件函数
         /// <summary>
         /// 读取cookie
         /// </summary>
-        private void loadCookie()
+        private void LoadCookie()
         {
-            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string cookiePath = documentPath + "\\FaDownloader\\cookie.txt";
+            string cookiePath = homeDir + "cookie.txt";
+            CreateDir(homeDir);
+
             //如果已经存在cookie文件则读取
             if (File.Exists(cookiePath))
             {
@@ -47,25 +79,20 @@ namespace FurryDownloader
         /// <summary>
         /// 保存cookie
         /// </summary>
-        private void saveCookie()
+        private void SaveCookie()
         {
             //为空则不存储
             if (cookie == "")
                 return;
 
-            // 创建文档路径
-            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string cookiePath = documentPath + "\\FaDownloader";
-            string cookieFile = cookiePath + "\\cookie.txt";
-            Directory.CreateDirectory(cookiePath);
-            if (!File.Exists(cookieFile))
-            {
-                File.Create(cookieFile).Close();
-            }
-            File.WriteAllText(cookieFile, cookie);
+            // 创建并写入
+            string path = homeDir + "cookie.txt";
+            CreateDir(homeDir);
+            CreateFile(path);
+            File.WriteAllText(path, cookie);
         }
         #endregion
-        #region 控件相关
+        #region 操作控件的工具类
         delegate void TextBoxDelegate(string str);
         /// <summary>在textBox中追加信息，因为在其他线程无法操作主线程的控件，所以需要用这种方法<</summary>
         /// <param name="str">要追加的信息</param>
@@ -107,9 +134,9 @@ namespace FurryDownloader
                     ButtonEnter.Enabled = false;
                     ButtonCancle.Enabled = true;
                     input_name.Enabled = false;
-                    checkBox1.Enabled = checkBox2.Enabled = false;
+                    RadioButtonGallery.Enabled = RadioButtonScraps.Enabled = false;
                     Browse.Enabled = false;
-                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = false;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = false;
                 }
             }
             catch
@@ -137,9 +164,9 @@ namespace FurryDownloader
                     ButtonEnter.Enabled = true;
                     ButtonCancle.Enabled = false;
                     input_name.Enabled = true;
-                    checkBox1.Enabled = checkBox2.Enabled = true;
+                    RadioButtonGallery.Enabled = RadioButtonScraps.Enabled = true;
                     Browse.Enabled = true;
-                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxPicNum.Enabled = true;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = true;
                 }
             }
             catch
@@ -147,40 +174,38 @@ namespace FurryDownloader
 
             }
         }
-        //确定按钮触发事件
+        #endregion
+        #region 按钮回调
+
+        /// <summary>
+        /// 确定按钮触发事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonStart_Click(object sender, EventArgs e)
         {
-            //开始之前的检查部分
-            if (input_name.Text == "")
-            {
-                MessageBox.Show("作者名不能为空！");
-                return;
-            }
-            if (checkBox1.Checked == false && checkBox2.Checked == false)
-            {
-                MessageBox.Show("请至少选择画廊和手稿中的一个");
-                return;
-            }
-
-            initBeforeDownload();
+            isStop = false;
 
             //开始下载
-            newThread = new Thread(loop);
-            newThread.Start();
+            workerThread = new Thread(DoDownload);
+            workerThread.Start();
         }
-        //取消按钮触发事件
+
+        /// <summary>
+        /// 取消按钮触发事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonCancle_Click(object sender, EventArgs e)
         {
-            //结束下载进程
-            newThread.Abort();
-            //修改回车焦点
-            this.AcceptButton = this.ButtonEnter;
-
-            AddItemToTextBox("\r\n下载终止，到此为止成功下载了" + fullDownloadNum + "张图片，跳过了" + skipDownloadNum + "张图片\r\n");
-
-            endDownload();
+            isStop = true;
         }
-        //浏览按钮触发事件
+
+        /// <summary>
+        /// 浏览按钮触发事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
@@ -190,6 +215,7 @@ namespace FurryDownloader
                 FilePath.Text = filePath;
             }
         }
+
         /// <summary>
         /// 登录fa
         /// </summary>
@@ -202,12 +228,17 @@ namespace FurryDownloader
             if (faLogin.Cookie != null && faLogin.Cookie != "")
             {
                 cookie = faLogin.Cookie;
-                saveCookie();
+                SaveCookie();
                 MessageBox.Show("登录成功，已保存身份信息以供下次使用");
             }
             faLogin.Dispose();
         }
-        //帮助按钮触发事件
+
+        /// <summary>
+        /// 帮助按钮触发事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Help_Click(object sender, EventArgs e)
         {
             string help = "本软件用于批量下载fa站图片\r\n" +
@@ -220,22 +251,23 @@ namespace FurryDownloader
         }
         #endregion
         #region 初始化函数和收尾函数
+
         /// <summary>
-        /// 初始化下载图集
+        /// 获取用户提供的数据
         /// </summary>
-        private void initDownload()
+        private void GetUserInput()
         {
-            singleDownloadNum = 0;
             //获取画师名
             userName = input_name.Text.Trim().Replace("_", "");
+
             //获取下载目录
-            if (FilePath.Text == "") filePath = ".\\" + userName + "\\";
-            else filePath = FilePath.Text + "\\" + userName + "\\";
+            filePath = FilePath.Text.Length == 0
+                ? String.Format(".\\{0}\\", userName)
+                : String.Format("{0}\\{1}\\", FilePath.Text, userName);
 
             //处理高级选项参数
             string inputPage = InputPageNum.Text.Trim();
             string inputStartPic = InputStartPicNum.Text.Trim();
-            string inputPic = InputMaxPicNum.Text.Trim();
 
             //起始页数，默认值为1
             if (!int.TryParse(inputPage, out startPageNum) || startPageNum < 1)
@@ -245,96 +277,97 @@ namespace FurryDownloader
             if (!int.TryParse(inputStartPic, out startPicNum) || startPicNum < 1)
                 this.startPicNum = 1;
 
-            //最大下载数，默认值为0，即不限量
-            if (!int.TryParse(inputPic, out maxDownloadNum) || maxDownloadNum < 1)
-                this.maxDownloadNum = 0;
-
             //输出高级参数下载信息
-            AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载，下载数量为{2}。\r\n",
-                                            this.startPageNum,
-                                            this.startPicNum,
-                                            this.maxDownloadNum > 0 ? this.maxDownloadNum.ToString() : "不限量"));
+            AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载\r\n", this.startPageNum, this.startPicNum));
         }
+
         /// <summary>
-        /// 下载前初始化
+        /// 下载前执行
         /// </summary>
-        private void initBeforeDownload()
+        private void BeforeDownload()
         {
             //冻结所有控件
             Freeze();
             //修改回车焦点
             this.AcceptButton = this.ButtonCancle;
 
-            //初始化下载参数
-            saveCookie();
+            //保存cookie
+            SaveCookie();
 
             //下载总数和跳过总数清零
-            fullDownloadNum = 0;
+            totalDownloadNum = 0;
             skipDownloadNum = 0;
 
             //初始化开始时间
-            beforeDownload = DateTime.Now;
+            startTime = DateTime.Now;
         }
+
         /// <summary>
         /// 结束下载时执行
         /// </summary>
-        private void endDownload()
+        private void EndDownload()
         {
             //解冻所有控件
             UnFreeze();
-            DownloadManager.StopAll();
 
             DateTime afterDownload = DateTime.Now;//下载结束后的时间
-            TimeSpan fullDownloadTime = afterDownload - beforeDownload;//总下载时间
-            AddItemToTextBox("共" + fullDownloadTime.Hours + "小时" + fullDownloadTime.Minutes + "分钟" + fullDownloadTime.Seconds + "秒");
+            TimeSpan fullDownloadTime = afterDownload - startTime;//总下载时间
+            AddItemToTextBox(String.Format("共{0}小时{1}分钟{2}秒", fullDownloadTime.Hours, fullDownloadTime.Minutes, fullDownloadTime.Seconds + "秒"));
+            AddItemToTextBox(String.Format("下载了{0}张，跳过了{1}张", totalDownloadNum, skipDownloadNum));
+
+            //修改回车焦点
+            this.AcceptButton = this.ButtonEnter;
         }
         #endregion
         #region 下载相关
         /// <summary>
-        /// 下载每一个勾选上的图集
+        /// 下载勾选上的图集
         /// </summary>
-        private void loop()
+        private void DoDownload()
         {
-            bool isfinish = true;//判定是否成功下载
-            if (checkBox1.Checked)
+            // 检查必须的信息
+            if (input_name.Text == "")
             {
-                State state = download("gallery\\");
-                if (state.code == StateCode.error)
-                {
-                    isfinish = false;//如果下载时出错，则isfinish为false
-                }
+                MessageBox.Show("作者名不能为空！");
+                return;
             }
 
-            //只有前面没出错，后面才能执行
-            if (isfinish && checkBox2.Checked)
+            BeforeDownload();
+
+            try
             {
-                State state = download("scraps\\");
-                if (state.code == StateCode.error)
+                if (RadioButtonGallery.Checked)
                 {
-                    isfinish = false;//如果下载时出错，则isfinish为false
+                    download("gallery\\");
                 }
+                else if (RadioButtonScraps.Checked)
+                {
+                    download("scraps\\");
+                }
+
+                DownloadManager.FinishAll();
+            }
+            catch (Exception e)
+            {
+                AddItemToTextBox(e.Message);
+                DownloadManager.StopAll();
             }
 
-            endDownload();
-
-            AddItemToTextBox("正在结束下载\r\n");
+            EndDownload();
         }
+
         /// <summary>
         /// 下载图集
         /// </summary>
         /// <param name="type">gallery或者scraps</param>
-        private State download(string type)
+        private void download(string type)
         {
             AddItemToTextBox(type + "下载开始");
-            initDownload();
-
-            //初始化参数
-            string[] allPages;//存储详情页地址
+            GetUserInput();
 
             //循环下载第pageNum页
-            while (true)
+            while (!isStop)
             {
-                State pageState;
                 //存储当前页面地址
                 string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
                                                 type,
@@ -342,85 +375,55 @@ namespace FurryDownloader
                                                 startPageNum);
 
                 //下载当前页
-                pageState = Request.GetGeneralContent(nowUrl, cookie);
-                if (pageState.code == StateCode.error)
-                {
-                    AddItemToTextBox(pageState.message);
-                    return new State(StateCode.error);
-                }
+                string html = GetHtml(nowUrl);
+
+                // 检查页面是否下载成功
+                if (html == null || html == "")
+                    throw new Exception("请检查网络");
 
                 //检查此用户是否存在
-                string nowPage = pageState.message;
-                if (Analyze.checkName(nowPage, userName) == false)
-                {
-                    AddItemToTextBox("未查询到该作者，请检查作者名称");
-                    return new State(StateCode.error);
-                }
+                if (!Analyze.HasUser(html))
+                    throw new Exception("未查询到该作者，请检查作者名称");
 
                 //检查此页是否还有图片，没有的话输出错误日志
-                pageState = Analyze.checkPage(nowPage);
-                if (pageState.code == StateCode.finish)
-                {
-                    AddItemToTextBox(pageState.message);
-                    break;
-                }
-                else if (pageState.code == StateCode.error)
-                {
-                    AddItemToTextBox(pageState.message);
-                    return new State(StateCode.error);
-                }
+                if (!Analyze.HasPicture(html))
+                    throw new Exception("需要登陆后才能下载此作者的作品");
 
                 //--------开始详情页下载循环------------
 
                 //获得所有详情页
-                allPages = Analyze.getNextPages(nowPage);
+                List<String> pages = Analyze.GetPages(html);
 
-                for (int i = startPicNum - 1; i < allPages.Length; ++i)
+                for (int i = startPicNum - 1; i < pages.Count; ++i)
                 {
-                    pageState = downloadPicture(allPages[i], type);
-
-                    if (pageState.code == StateCode.finish)
-                    {
-                        return new State(StateCode.finish);
-                    }
-                    else if (pageState.code == StateCode.error)
-                    {
-                        return new State(StateCode.error);
-                    }
+                    downloadPicture(pages[i], type);
                 }
                 startPicNum = 1;
                 startPageNum++;
             }
-            return new State(StateCode.ok);
         }
+
         /// <summary>
         /// 根据详情页url下载此页面，解析其中的图片地址并下载
         /// </summary>
         /// <param name="pageUrl"></param>
         /// <param name="type"></param>
-        /// <returns></returns>
-        private State downloadPicture(string pageUrl, string type)
+        private void downloadPicture(string pageUrl, string type)
         {
-            State pageState;
-
-            //如果已经到达最大下载量，则停止下载
-            if (maxDownloadNum > 0 && singleDownloadNum >= maxDownloadNum)
-                return new State(StateCode.finish);
-
             // 获取缓存路径
             string[] arr = pageUrl.Split('/');
             string pageId = arr[arr.Length - 2];
-            string documentPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string cachePath = documentPath + "\\FaDownloader\\cache\\";
-            string cacheFile = cachePath + pageId;
-            Directory.CreateDirectory(cachePath);
+
+            string cacheDir = homeDir + "cache\\";
+            CreateDir(cacheDir);
+            string cacheFile = cacheDir + pageId;
             string pictureUrl = null;
 
             // 从缓存中获取地址
             if (File.Exists(cacheFile))
             {
                 pictureUrl = File.ReadAllText(cacheFile);
-                if (pictureUrl == null || pictureUrl == "")
+                if (pictureUrl == "")
                 {
                     pictureUrl = null;
                 }
@@ -429,32 +432,24 @@ namespace FurryDownloader
             if (pictureUrl == null)
             {
                 //获取详情页面信息
-                pageState = Request.GetGeneralContent(pageUrl, cookie);
-                if (pageState.code == StateCode.error)
-                {
-                    AddItemToTextBox(pageState.message);
-                    return new State(StateCode.error);
-                }
+                string html = GetHtml(pageUrl);
+
+                // 检查页面是否下载成功
+                if (html == null || html == "")
+                    throw new Exception("请检查网络");
 
                 //获取图片下载地址
-                pictureUrl = Analyze.getPictureUrl(pageState.message);
+                pictureUrl = Analyze.GetPictureUrl(html);
                 if (pictureUrl == null)
-                {
-                    AddItemToTextBox("无法找到下载地址");
-                    return new State(StateCode.error);
-                }
-                File.Create(cacheFile).Close();
+                    throw new Exception("无法分析出图片地址：" + pageUrl);
+
+                // 缓存下来图片地址
+                CreateFile(cacheFile);
                 File.WriteAllText(cacheFile, pictureUrl);
             }
 
             //获取文件名字
-            string pictureName = Analyze.getFilename(pictureUrl);
-
-            /*
-            //开始下载
-            AddItemToTextBox("第" + startPageNum + "页" + "第" + startPicNum + "张下载开始");
-            AddItemToTextBox("文件名：" + pictureName);
-            */
+            string pictureName = Analyze.GetFileName(pictureUrl);
 
             //文件完整路径
             string fullFilePath = filePath + type + pictureName;
@@ -465,8 +460,13 @@ namespace FurryDownloader
                 AddItemToTextBox("文件已存在，跳过下载\r\n");
                 startPicNum++;
                 skipDownloadNum++;
-                singleDownloadNum++;
-                return new State(StateCode.ok);
+                return;
+            }
+
+            // 停止时不再添加新的任务
+            if (isStop)
+            {
+                throw new Exception("正在结束下载");
             }
 
             // 使用多线程下载
@@ -488,9 +488,11 @@ namespace FurryDownloader
                 }),
                 TaskFinish = new Task.TaskFinishDelegate(delegate (int id, Task t)
                 {
-                    DateTime now = DateTime.Now;
+                    totalDownloadNum++;
+
                     //计算下载所用时间
-                    TimeSpan time = now - beforeDownload;
+                    DateTime now = DateTime.Now;
+                    TimeSpan time = now - startTime;
 
                     AddItemToTextBox(String.Format("第{0}页第{1}张下载完成，已经过{2}秒", t.pageNum, t.picNum, time.TotalSeconds));
                 }),
@@ -500,30 +502,35 @@ namespace FurryDownloader
                 }),
             };
             DownloadManager.Add(task);
-
-            /*
-            //获取下载前的时间
-            DateTime before = DateTime.Now;
-
-            pageState = Request.GetFileContent(pictureUrl, filePath + type, pictureName);
-            if (pageState.code == StateCode.error)
-            {
-                AddItemToTextBox("下载失败,原因是：" + pageState.message);
-                return new State(StateCode.error);
-            }
-
-            //获取下载后的时间
-            DateTime after = DateTime.Now;
-            //计算下载所用时间
-            TimeSpan speed = after - before;
-
-            AddItemToTextBox(speed.TotalSeconds + "秒下载完成\r\n" );
-            */
-
             startPicNum++;
-            fullDownloadNum++;
-            singleDownloadNum++;
-            return new State(StateCode.ok);
+        }
+
+        /// <summary>
+        /// 下载所给网址指向的页面信息
+        /// </summary>
+        /// <param name="url">网址</param>
+        /// <returns>页面信息</returns>
+        public string GetHtml(string url)
+        {
+            HttpItem item = new HttpItem()
+            {
+                URL = url,//URL     必需项
+                Encoding = Encoding.UTF8,//编码格式（utf-8,gb2312,gbk）     可选项 默认类会自动识别
+                                         //Encoding = Encoding.Default,
+                Method = "get",//URL     可选项 默认为Get
+                Timeout = 10000,//连接超时时间     可选项默认为100000
+                IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
+                Cookie = cookie,//字符串Cookie     可选项
+                UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
+                Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
+                ContentType = "text/html",//返回类型    可选项有默认值
+                Referer = "http://www.furaffinity.net",//来源URL     可选项
+                ResultType = ResultType.String,//返回数据类型，是Byte还是String
+                // ProxyIp = "127.0.0.1:1081",
+            };
+
+            // 返回html
+            return http.GetHtml(item).Html;
         }
         #endregion
     }

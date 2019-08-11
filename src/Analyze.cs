@@ -10,47 +10,50 @@ namespace FurryDownloader
         /// <summary>
         /// 检查是否存在此用户名
         /// </summary>
-        /// <param name="page">页面信息</param>
-        /// <param name="name">作者名</param>
+        /// <param name="content"></param>
         /// <returns>存在则返回真</returns>
-        public static bool checkName(string page, string name)
+        public static bool HasUser(string content)
         {
-            if (page.Contains("The username \"" + name + "\" could not be found."))
-                return false;
-            else return true;
+            return !Regex.IsMatch(content, @"The username ""\w+"" could not be found.");
         }
 
         /// <summary>
-        /// 检查是否存在此页,存在则返回true
+        /// 检查是否又
         /// </summary>
-        /// <param name="page">页面信息</param>
-        /// <returns>成功返回ok，失败返回错误信息</returns>
-        public static State checkPage(string page)
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static bool HasPicture(string content)
         {
-            if (page.Contains("There are no submissions to list"))
-                return new State(StateCode.finish,"此页无任何图片");
-            else if (page.Contains("has elected to make their content available to registered users only."))
-                return new State(StateCode.error, "很抱歉，此页需要登录授权才可查看，请点击右侧登录按钮进行登录");
-            else return new State(StateCode.ok);
+            return !content.Contains("There are no submissions to list");
+        }
+
+        /// <summary>
+        /// 检查是否需要登录后查看
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static bool NeedLogin(string content)
+        {
+            return !content.Contains("has elected to make their content available to registered users only.");
         }
 
         /// <summary>
         /// 分析出当前页面里所有的详情页地址
         /// </summary>
-        /// <param name="nowPage">下载好的页面信息</param>
-        /// <returns>返回存储着所有页面地址的字符串数组</returns>
-        public static string[] getNextPages(string nowPage)
+        /// <param name="content">下载好的页面信息</param>
+        /// <returns>返回存储着所有页面地址的字符串列表</returns>
+        public static List<string> GetPages(string content)
         {
-            List <string> pages = new List<string>();//一页最多48张图片
+            List<string> pages = new List<string>();
 
-            //<a href="/view/23351569/">
-            MatchCollection matchs = Regex.Matches(nowPage, @"<a href=""/view/\d+/"">");
+            // <a href="/view/23351569/">
+            MatchCollection matchs = Regex.Matches(content, @"<a href=""/view/\d+/"">");
             foreach (Match match in matchs)
             {
                 pages.Add("http://www.furaffinity.net" + match.Value.Split('"')[1]);
             }
 
-            return pages.ToArray();
+            return pages;
         }
 
         /// <summary>
@@ -58,24 +61,24 @@ namespace FurryDownloader
         /// </summary>
         /// <param name="page">下载好的详情页面信息</param>
         /// <returns>返回提取好的原图下载地址</returns>
-        public static string getPictureUrl(string page)
+        public static string GetPictureUrl(string page)
         {
-            //<a href="//d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png">Download
+            // <a href="//d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png">Download
             MatchCollection matchs = Regex.Matches(page, @"href="".*?"".*?>Download");
 
             if (matchs.Count == 0)
                 return null;
             else return "http:" + matchs[0].Value.Split('"')[1];
         }
-        
+
         /// <summary>
         /// 提取原图下载地址内的文件名信息
         /// </summary>
         /// <param name="downloadUrl">图片下载地址</param>
         /// <returns>返回提取出的图片名</returns>
-        public static string getFilename(string downloadUrl)
+        public static string GetFileName(string downloadUrl)
         {
-            //http://d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png
+            // http://d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png
             string[] result = downloadUrl.Split('/');
 
             return result[result.Length - 1];

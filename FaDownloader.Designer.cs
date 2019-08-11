@@ -37,15 +37,13 @@
             this.input_name = new System.Windows.Forms.TextBox();
             this.ButtonEnter = new System.Windows.Forms.Button();
             this.ButtonCancle = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.panel = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
+            this.RadioButtonScraps = new System.Windows.Forms.RadioButton();
+            this.RadioButtonGallery = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.InputStartPicNum = new System.Windows.Forms.TextBox();
-            this.InputMaxPicNum = new System.Windows.Forms.TextBox();
             this.InputPageNum = new System.Windows.Forms.TextBox();
             this.Browse = new System.Windows.Forms.Button();
             this.FilePath = new System.Windows.Forms.TextBox();
@@ -135,59 +133,48 @@
             this.ButtonCancle.UseVisualStyleBackColor = true;
             this.ButtonCancle.Click += new System.EventHandler(this.ButtonCancle_Click);
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(133, 8);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(59, 19);
-            this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "画廊";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(208, 8);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(59, 19);
-            this.checkBox2.TabIndex = 5;
-            this.checkBox2.Text = "手稿";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // panel
             // 
             this.panel.BackColor = System.Drawing.Color.Gainsboro;
             this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel.Controls.Add(this.label8);
+            this.panel.Controls.Add(this.RadioButtonScraps);
+            this.panel.Controls.Add(this.RadioButtonGallery);
             this.panel.Controls.Add(this.label7);
             this.panel.Controls.Add(this.label6);
             this.panel.Controls.Add(this.label5);
             this.panel.Controls.Add(this.InputStartPicNum);
-            this.panel.Controls.Add(this.InputMaxPicNum);
             this.panel.Controls.Add(this.InputPageNum);
             this.panel.Controls.Add(Expert);
             this.panel.Controls.Add(this.Browse);
             this.panel.Controls.Add(this.FilePath);
             this.panel.Controls.Add(label3);
             this.panel.Controls.Add(label2);
-            this.panel.Controls.Add(this.checkBox1);
-            this.panel.Controls.Add(this.checkBox2);
             this.panel.Location = new System.Drawing.Point(12, 104);
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(526, 126);
             this.panel.TabIndex = 6;
             // 
-            // label8
+            // RadioButtonScraps
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(453, 67);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(22, 15);
-            this.label8.TabIndex = 19;
-            this.label8.Text = "个";
+            this.RadioButtonScraps.AutoSize = true;
+            this.RadioButtonScraps.Location = new System.Drawing.Point(258, 7);
+            this.RadioButtonScraps.Name = "RadioButtonScraps";
+            this.RadioButtonScraps.Size = new System.Drawing.Size(76, 19);
+            this.RadioButtonScraps.TabIndex = 20;
+            this.RadioButtonScraps.Text = "scraps";
+            this.RadioButtonScraps.UseVisualStyleBackColor = true;
+            // 
+            // RadioButtonGallery
+            // 
+            this.RadioButtonGallery.AutoSize = true;
+            this.RadioButtonGallery.Checked = true;
+            this.RadioButtonGallery.Location = new System.Drawing.Point(133, 7);
+            this.RadioButtonGallery.Name = "RadioButtonGallery";
+            this.RadioButtonGallery.Size = new System.Drawing.Size(84, 19);
+            this.RadioButtonGallery.TabIndex = 19;
+            this.RadioButtonGallery.TabStop = true;
+            this.RadioButtonGallery.Text = "gallery";
+            this.RadioButtonGallery.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
@@ -223,13 +210,6 @@
             this.InputStartPicNum.Size = new System.Drawing.Size(36, 25);
             this.InputStartPicNum.TabIndex = 13;
             this.InputStartPicNum.Text = "1";
-            // 
-            // InputMaxPicNum
-            // 
-            this.InputMaxPicNum.Location = new System.Drawing.Point(407, 62);
-            this.InputMaxPicNum.Name = "InputMaxPicNum";
-            this.InputMaxPicNum.Size = new System.Drawing.Size(40, 25);
-            this.InputMaxPicNum.TabIndex = 12;
             // 
             // InputPageNum
             // 
@@ -267,7 +247,8 @@
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox.Size = new System.Drawing.Size(640, 305);
             this.textBox.TabIndex = 7;
-            this.textBox.Text = resources.GetString("textBox.Text");
+            this.textBox.Text = "我的邮箱：recallsufuture@gmail.com\r\n默认下载到当前目录下以作者名命名的文件夹里。\r\n默认每页48张图片。默认将所选图集的图片全部下载。\r" +
+    "\n高级参数如果留空或填0，都会使用默认参数下载。\r\n如果想下载需登陆后查看的内容，请在右侧登录。\r\n\r\n如果嫌速度慢，可以多开几个同时下载。\r\n\r\n\r\n";
             // 
             // Help
             // 
@@ -321,21 +302,19 @@
         private System.Windows.Forms.TextBox input_name;
         private System.Windows.Forms.Button ButtonEnter;
         private System.Windows.Forms.Button ButtonCancle;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.TextBox FilePath;
         private System.Windows.Forms.Button Browse;
         private System.Windows.Forms.Button Help;
-        private System.Windows.Forms.TextBox InputMaxPicNum;
         private System.Windows.Forms.TextBox InputPageNum;
         private System.Windows.Forms.TextBox InputStartPicNum;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button ButtonLogin;
+        private System.Windows.Forms.RadioButton RadioButtonScraps;
+        private System.Windows.Forms.RadioButton RadioButtonGallery;
     }
 }
 
