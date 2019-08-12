@@ -18,16 +18,6 @@ namespace FurryDownloader
         }
 
         /// <summary>
-        /// 检查是否又
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public static bool HasPicture(string content)
-        {
-            return !content.Contains("There are no submissions to list");
-        }
-
-        /// <summary>
         /// 检查是否需要登录后查看
         /// </summary>
         /// <param name="content"></param>

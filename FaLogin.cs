@@ -18,8 +18,10 @@ namespace FurryDownloader
         {
             // 获取被httponly保护的cookie
             string cookie = FullWebBrowserCookie.GetCookieInternal(WebBrowser.Url, false);
-            
-            if (cookie.Contains("__cfduid"))
+
+            System.Console.WriteLine(cookie);
+
+            if (cookie.Contains("; a="))
             {
                 Cookie = cookie;
                 WebBrowser.Dispose();

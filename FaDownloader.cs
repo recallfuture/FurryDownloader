@@ -73,13 +73,13 @@ namespace FurryDownloader
             //如果已经存在cookie文件则读取
             if (File.Exists(cookiePath))
             {
-                cookie = File.ReadAllText(cookiePath);
+                cookie = File.ReadAllText(cookiePath, Encoding.UTF8);
             }
         }
         /// <summary>
         /// 保存cookie
         /// </summary>
-        private void SaveCookie()
+        private void SaveCookie(string cookie)
         {
             //为空则不存储
             if (cookie == "")
@@ -89,7 +89,7 @@ namespace FurryDownloader
             string path = homeDir + "cookie.txt";
             CreateDir(homeDir);
             CreateFile(path);
-            File.WriteAllText(path, cookie);
+            File.WriteAllText(path, cookie, Encoding.UTF8);
         }
         #endregion
         #region 操作控件的工具类
@@ -227,8 +227,8 @@ namespace FurryDownloader
             faLogin.ShowDialog();
             if (faLogin.Cookie != null && faLogin.Cookie != "")
             {
-                cookie = faLogin.Cookie;
-                SaveCookie();
+                SaveCookie(faLogin.Cookie);
+                LoadCookie();
                 MessageBox.Show("登录成功，已保存身份信息以供下次使用");
             }
             faLogin.Dispose();
@@ -292,9 +292,6 @@ namespace FurryDownloader
             // 修改回车焦点
             this.AcceptButton = this.ButtonCancle;
 
-            // 保存cookie
-            SaveCookie();
-
             // 下载总数和跳过总数清零
             totalDownloadNum = 0;
             skipDownloadNum = 0;
@@ -317,7 +314,7 @@ namespace FurryDownloader
             DateTime now = DateTime.Now;// 下载结束后的时间
             TimeSpan time = now - startTime;// 总下载时间
             AddItemToTextBox(String.Format("共{0}小时{1}分钟{2}秒", time.Hours, time.Minutes, time.Seconds + "秒"));
-            AddItemToTextBox(String.Format("下载了{0}张，跳过了{1}张", totalDownloadNum, skipDownloadNum));
+            AddItemToTextBox(String.Format("下载了{0}张，跳过了{1}张\r\n", totalDownloadNum, skipDownloadNum));
 
             // 修改回车焦点
             this.AcceptButton = this.ButtonEnter;
@@ -372,6 +369,11 @@ namespace FurryDownloader
             // 循环下载第pageNum页
             while (true)
             {
+                if (isStop)
+                {
+                    throw new Exception("正在结束下载");
+                }
+
                 // 存储当前页面地址
                 string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
                                                 type,
@@ -389,14 +391,19 @@ namespace FurryDownloader
                 if (!Analyze.HasUser(html))
                     throw new Exception("未查询到该作者，请检查作者名称");
 
-                // 检查此页是否还有图片，没有的话输出错误日志
-                if (!Analyze.HasPicture(html))
+                // 检查此页是否需要登录才能访问
+                if (!Analyze.NeedLogin(html))
                     throw new Exception("需要登陆后才能下载此作者的作品");
 
                 //--------开始详情页下载循环------------
 
                 // 获得所有详情页
                 List<String> pages = Analyze.GetPages(html);
+
+                // 检查此页是否还有图片，没有的话就结束并等待所有任务完成
+                AddItemToTextBox(String.Format("第{0}页共{1}张图片", startPageNum, pages.Count));
+                if (pages.Count == 0)
+                    return;
 
                 for (int i = startPicNum - 1; i < pages.Count; ++i)
                 {
@@ -531,6 +538,8 @@ namespace FurryDownloader
                 ResultType = ResultType.String,//返回数据类型，是Byte还是String
                 // ProxyIp = "127.0.0.1:1081",
             };
+
+            Console.WriteLine(cookie);
 
             // 返回html
             return http.GetHtml(item).Html;
