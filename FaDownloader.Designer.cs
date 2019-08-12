@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Label info_name;
-            System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label3;
             System.Windows.Forms.Label Expert;
@@ -51,7 +50,6 @@
             this.Help = new System.Windows.Forms.Button();
             this.ButtonLogin = new System.Windows.Forms.Button();
             info_name = new System.Windows.Forms.Label();
-            label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             Expert = new System.Windows.Forms.Label();
@@ -67,15 +65,6 @@
             info_name.Size = new System.Drawing.Size(235, 24);
             info_name.TabIndex = 0;
             info_name.Text = "在此处输入作者名：";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(30, 83);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(67, 15);
-            label1.TabIndex = 8;
-            label1.Text = "附加选项";
             // 
             // label2
             // 
@@ -129,7 +118,7 @@
             this.ButtonCancle.Name = "ButtonCancle";
             this.ButtonCancle.Size = new System.Drawing.Size(108, 47);
             this.ButtonCancle.TabIndex = 3;
-            this.ButtonCancle.Text = "取消";
+            this.ButtonCancle.Text = "停止";
             this.ButtonCancle.UseVisualStyleBackColor = true;
             this.ButtonCancle.Click += new System.EventHandler(this.ButtonCancle_Click);
             // 
@@ -149,9 +138,9 @@
             this.panel.Controls.Add(this.FilePath);
             this.panel.Controls.Add(label3);
             this.panel.Controls.Add(label2);
-            this.panel.Location = new System.Drawing.Point(12, 104);
+            this.panel.Location = new System.Drawing.Point(12, 73);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(526, 126);
+            this.panel.Size = new System.Drawing.Size(526, 157);
             this.panel.TabIndex = 6;
             // 
             // RadioButtonScraps
@@ -181,7 +170,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(304, 67);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(97, 15);
+            this.label7.Size = new System.Drawing.Size(82, 15);
             this.label7.TabIndex = 18;
             this.label7.Text = "张开始下载";
             // 
@@ -247,8 +236,7 @@
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox.Size = new System.Drawing.Size(640, 305);
             this.textBox.TabIndex = 7;
-            this.textBox.Text = "我的邮箱：recallsufuture@gmail.com\r\n默认下载到当前目录下以作者名命名的文件夹里。\r\n默认每页48张图片。默认将所选图集的图片全部下载。\r" +
-    "\n高级参数如果留空或填0，都会使用默认参数下载。\r\n如果想下载需登陆后查看的内容，请在右侧登录。\r\n\r\n";
+            this.textBox.Text = resources.GetString("textBox.Text");
             // 
             // Help
             // 
@@ -278,7 +266,6 @@
             this.ClientSize = new System.Drawing.Size(664, 553);
             this.Controls.Add(this.ButtonLogin);
             this.Controls.Add(this.Help);
-            this.Controls.Add(label1);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.ButtonCancle);

@@ -24,7 +24,7 @@ namespace FurryDownloader
         private Thread workerThread;        // 主循环线程
         private DateTime startTime;         // 开始下载前的时间
 
-        private bool isStop = false;
+        private bool isStop = false;        // 是否停止下载
 
         private HttpHelper http = new HttpHelper();
         private string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\FaDownloader\\";
@@ -257,27 +257,27 @@ namespace FurryDownloader
         /// </summary>
         private void GetUserInput()
         {
-            //获取画师名
+            // 获取画师名
             userName = input_name.Text.Trim().Replace("_", "");
 
-            //获取下载目录
+            // 获取下载目录
             filePath = FilePath.Text.Length == 0
                 ? String.Format(".\\{0}\\", userName)
                 : String.Format("{0}\\{1}\\", FilePath.Text, userName);
 
-            //处理高级选项参数
+            // 处理高级选项参数
             string inputPage = InputPageNum.Text.Trim();
             string inputStartPic = InputStartPicNum.Text.Trim();
 
-            //起始页数，默认值为1
+            // 起始页数，默认值为1
             if (!int.TryParse(inputPage, out startPageNum) || startPageNum < 1)
                 this.startPageNum = 1;
 
-            //从第几张开始下载，默认值为1
+            // 从第几张开始下载，默认值为1
             if (!int.TryParse(inputStartPic, out startPicNum) || startPicNum < 1)
                 this.startPicNum = 1;
 
-            //输出高级参数下载信息
+            // 输出高级参数下载信息
             AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载\r\n", this.startPageNum, this.startPicNum));
         }
 
@@ -286,20 +286,24 @@ namespace FurryDownloader
         /// </summary>
         private void BeforeDownload()
         {
-            //冻结所有控件
+            // 冻结所有控件
             Freeze();
-            //修改回车焦点
+
+            // 修改回车焦点
             this.AcceptButton = this.ButtonCancle;
 
-            //保存cookie
+            // 保存cookie
             SaveCookie();
 
-            //下载总数和跳过总数清零
+            // 下载总数和跳过总数清零
             totalDownloadNum = 0;
             skipDownloadNum = 0;
 
-            //初始化开始时间
+            // 初始化开始时间
             startTime = DateTime.Now;
+
+            // 设置最大线程数
+            DownloadManager.SetMaxThreads(16);
         }
 
         /// <summary>
@@ -307,15 +311,15 @@ namespace FurryDownloader
         /// </summary>
         private void EndDownload()
         {
-            //解冻所有控件
+            // 解冻所有控件
             UnFreeze();
 
-            DateTime afterDownload = DateTime.Now;//下载结束后的时间
-            TimeSpan fullDownloadTime = afterDownload - startTime;//总下载时间
-            AddItemToTextBox(String.Format("共{0}小时{1}分钟{2}秒", fullDownloadTime.Hours, fullDownloadTime.Minutes, fullDownloadTime.Seconds + "秒"));
+            DateTime now = DateTime.Now;// 下载结束后的时间
+            TimeSpan time = now - startTime;// 总下载时间
+            AddItemToTextBox(String.Format("共{0}小时{1}分钟{2}秒", time.Hours, time.Minutes, time.Seconds + "秒"));
             AddItemToTextBox(String.Format("下载了{0}张，跳过了{1}张", totalDownloadNum, skipDownloadNum));
 
-            //修改回车焦点
+            // 修改回车焦点
             this.AcceptButton = this.ButtonEnter;
         }
         #endregion
@@ -365,37 +369,42 @@ namespace FurryDownloader
             AddItemToTextBox(type + "下载开始");
             GetUserInput();
 
-            //循环下载第pageNum页
-            while (!isStop)
+            // 循环下载第pageNum页
+            while (true)
             {
-                //存储当前页面地址
+                // 存储当前页面地址
                 string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
                                                 type,
                                                 userName,
                                                 startPageNum);
 
-                //下载当前页
+                // 下载当前页
                 string html = GetHtml(nowUrl);
 
                 // 检查页面是否下载成功
                 if (html == null || html == "")
                     throw new Exception("请检查网络");
 
-                //检查此用户是否存在
+                // 检查此用户是否存在
                 if (!Analyze.HasUser(html))
                     throw new Exception("未查询到该作者，请检查作者名称");
 
-                //检查此页是否还有图片，没有的话输出错误日志
+                // 检查此页是否还有图片，没有的话输出错误日志
                 if (!Analyze.HasPicture(html))
                     throw new Exception("需要登陆后才能下载此作者的作品");
 
                 //--------开始详情页下载循环------------
 
-                //获得所有详情页
+                // 获得所有详情页
                 List<String> pages = Analyze.GetPages(html);
 
                 for (int i = startPicNum - 1; i < pages.Count; ++i)
                 {
+                    // 停止时不再添加新的任务
+                    if (isStop)
+                    {
+                        throw new Exception("正在结束下载");
+                    }
                     downloadPicture(pages[i], type);
                 }
                 startPicNum = 1;
@@ -448,25 +457,19 @@ namespace FurryDownloader
                 File.WriteAllText(cacheFile, pictureUrl);
             }
 
-            //获取文件名字
+            // 获取文件名字
             string pictureName = Analyze.GetFileName(pictureUrl);
 
-            //文件完整路径
+            // 文件完整路径
             string fullFilePath = filePath + type + pictureName;
 
-            //判断文件是否已经存在
+            // 判断文件是否已经存在
             if (File.Exists(fullFilePath))
             {
-                AddItemToTextBox("文件已存在，跳过下载\r\n");
+                AddItemToTextBox(String.Format("第{0}页第{1}张已存在，跳过", startPageNum, startPicNum));
                 startPicNum++;
                 skipDownloadNum++;
                 return;
-            }
-
-            // 停止时不再添加新的任务
-            if (isStop)
-            {
-                throw new Exception("正在结束下载");
             }
 
             // 使用多线程下载
@@ -490,7 +493,7 @@ namespace FurryDownloader
                 {
                     totalDownloadNum++;
 
-                    //计算下载所用时间
+                    // 计算下载所用时间
                     DateTime now = DateTime.Now;
                     TimeSpan time = now - startTime;
 
