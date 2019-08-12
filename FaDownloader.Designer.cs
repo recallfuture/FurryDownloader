@@ -276,7 +276,7 @@
             this.MaximizeBox = false;
             this.Name = "mainFrom";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "furaffinity downloader(plus)";
+            this.Text = "Furaffinity Downloader";
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();
             this.ResumeLayout(false);
