@@ -306,7 +306,7 @@ namespace FurryDownloader
         /// <summary>
         /// 结束下载时执行
         /// </summary>
-        private void EndDownload()
+        private void AfterDownload()
         {
             // 解冻所有控件
             UnFreeze();
@@ -339,22 +339,23 @@ namespace FurryDownloader
             {
                 if (RadioButtonGallery.Checked)
                 {
-                    download("gallery\\");
+                    download("gallery");
                 }
                 else if (RadioButtonScraps.Checked)
                 {
-                    download("scraps\\");
+                    download("scraps");
                 }
 
-                DownloadManager.FinishAll();
+                DownloadManager.WaitForAllFinished();
             }
             catch (Exception e)
             {
                 AddItemToTextBox(e.Message);
                 DownloadManager.StopAll();
+                DownloadManager.WaitForAllFinished();
             }
 
-            EndDownload();
+            AfterDownload();
         }
 
         /// <summary>
@@ -468,7 +469,7 @@ namespace FurryDownloader
             string pictureName = Analyze.GetFileName(pictureUrl);
 
             // 文件完整路径
-            string fullFilePath = filePath + type + pictureName;
+            string fullFilePath = filePath + type + "\\" + pictureName;
 
             // 判断文件是否已经存在
             if (File.Exists(fullFilePath))
@@ -486,7 +487,7 @@ namespace FurryDownloader
                 picNum = startPicNum,
 
                 Url = pictureUrl,
-                FilePath = filePath + type,
+                FilePath = filePath + type + "\\",
                 FileName = pictureName,
                 TaskStart = new Task.TaskStartDelegate(delegate (int id, Task t)
                 {

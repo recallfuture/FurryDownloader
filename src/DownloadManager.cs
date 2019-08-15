@@ -248,24 +248,21 @@ namespace FurryDownloader
         }
 
         /// <summary>
-        /// 全部停止
+        /// 向所有还未完成的任务发送停止消息
         /// </summary>
         public static void StopAll()
         {
-            // 将所有线程标志成stop
             foreach (var task in tasks.Values)
             {
                 if (task.Status != TaskStatus.Finish)
                     task.Status = TaskStatus.Stop;
             }
-
-            FinishAll();
         }
 
         /// <summary>
         /// 等待全部完成
         /// </summary>
-        public static void FinishAll()
+        public static void WaitForAllFinished()
         {
             // 循环判定直到所有任务都完成
             bool flag = true;
