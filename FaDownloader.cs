@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace FurryDownloader
         {
             InitializeComponent();
             LoadCookie();
+            LoadSetting();
         }
 
         /// <summary>
@@ -90,6 +92,35 @@ namespace FurryDownloader
             CreateDir(homeDir);
             CreateFile(path);
             File.WriteAllText(path, cookie, Encoding.UTF8);
+        }
+        #endregion
+        #region 配置文件
+        private void LoadSetting()
+        {
+            string settingPath = homeDir + "setting.txt";
+            CreateDir(homeDir);
+
+            // 如果已经存在设置文件则读取
+            // 暂时只存储路径
+            if (File.Exists(settingPath))
+            {
+                filePath = File.ReadAllText(settingPath, Encoding.UTF8);
+                FilePath.Text = filePath;
+            }
+        }
+
+        private void SaveSetting(string setting)
+        {
+            if (filePath == "")
+            {
+                return;
+            }
+
+            // 创建并写入
+            string path = homeDir + "setting.txt";
+            CreateDir(homeDir);
+            CreateFile(path);
+            File.WriteAllText(path, setting, Encoding.UTF8);
         }
         #endregion
         #region 操作控件的工具类
@@ -213,6 +244,8 @@ namespace FurryDownloader
             {
                 filePath = folderBrowserDialog.SelectedPath;
                 FilePath.Text = filePath;
+                // 保存设置
+                SaveSetting(filePath);
             }
         }
 
@@ -487,7 +520,9 @@ namespace FurryDownloader
                 picNum = startPicNum,
 
                 Url = pictureUrl,
-                FilePath = filePath + type + "\\",
+
+                // gallery路径扁平化
+                FilePath = filePath + (type == "gallery" ? "" : type + "\\"),
                 FileName = pictureName,
                 TaskStart = new Task.TaskStartDelegate(delegate (int id, Task t)
                 {
@@ -509,7 +544,7 @@ namespace FurryDownloader
                 }),
                 TaskFail = new Task.TaskFailDelegate(delegate (int id, Task t)
                 {
-                    AddItemToTextBox(String.Format("第{0}页第{1}张下载失败", t.pageNum, t.picNum));
+                    AddItemToTextBox(String.Format("第{0}页第{1}张下载失败，文件名：{2}，url：{3}", t.pageNum, t.picNum, t.FileName, t.Url));
                 }),
             };
             DownloadManager.Add(task);
@@ -532,11 +567,12 @@ namespace FurryDownloader
                 Timeout = 10000,//连接超时时间     可选项默认为100000
                 IsToLower = false,//得到的HTML代码是否转成小写     可选项默认转小写
                 Cookie = cookie,//字符串Cookie     可选项
-                UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
-                Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
-                ContentType = "text/html",//返回类型    可选项有默认值
+                UserAgent = "PostmanRuntime/7.17.1",//用户的浏览器类型，版本，操作系统     可选项有默认值
+                Accept = "*/*",//    可选项有默认值
                 Referer = "http://www.furaffinity.net",//来源URL     可选项
+                Host = "www.furaffinity.net",
                 ResultType = ResultType.String,//返回数据类型，是Byte还是String
+                Connectionlimit = 16,
                 // ProxyIp = "127.0.0.1:1081",
             };
 

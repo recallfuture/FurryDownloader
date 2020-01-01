@@ -289,6 +289,28 @@ namespace FurryDownloader
             //设置最大连接
             if (item.Connectionlimit > 0) request.ServicePoint.ConnectionLimit = item.Connectionlimit;
         }
+        private Uri MyUri(string url)
+        {
+            Uri uri = new Uri(url);
+            System.Reflection.MethodInfo getSyntax = typeof(UriParser).GetMethod("GetSyntax", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            System.Reflection.FieldInfo flagsField = typeof(UriParser).GetField("m_Flags", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (getSyntax != null && flagsField != null)
+            {
+                foreach (string scheme in new[] { "http", "https" })
+                {
+                    UriParser parser = (UriParser)getSyntax.Invoke(null, new object[] { scheme });
+                    if (parser != null)
+                    {
+                        int flagsValue = (int)flagsField.GetValue(parser);
+                        // Clear the CanonicalizeAsFilePath attribute
+                        if ((flagsValue & 0x1000000) != 0)
+                            flagsField.SetValue(parser, flagsValue & ~0x1000000);
+                    }
+                }
+            }
+            uri = new Uri(url);
+            return uri;
+        }
         /// <summary>
         /// 设置证书
         /// </summary>
@@ -308,7 +330,7 @@ namespace FurryDownloader
             else
             {
                 //初始化对像，并设置请求的URL地址
-                request = (HttpWebRequest)WebRequest.Create(item.URL);
+                request = (HttpWebRequest)WebRequest.Create(MyUri(item.URL));
                 SetCerList(item);
             }
         }
