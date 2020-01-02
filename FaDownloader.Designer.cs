@@ -37,6 +37,7 @@
             this.ButtonEnter = new System.Windows.Forms.Button();
             this.ButtonCancle = new System.Windows.Forms.Button();
             this.panel = new System.Windows.Forms.Panel();
+            this.checkBoxRetry = new System.Windows.Forms.CheckBox();
             this.RadioButtonScraps = new System.Windows.Forms.RadioButton();
             this.RadioButtonGallery = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
@@ -126,6 +127,7 @@
             // 
             this.panel.BackColor = System.Drawing.Color.Gainsboro;
             this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel.Controls.Add(this.checkBoxRetry);
             this.panel.Controls.Add(this.RadioButtonScraps);
             this.panel.Controls.Add(this.RadioButtonGallery);
             this.panel.Controls.Add(this.label7);
@@ -142,6 +144,18 @@
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(526, 157);
             this.panel.TabIndex = 6;
+            // 
+            // checkBoxRetry
+            // 
+            this.checkBoxRetry.AutoSize = true;
+            this.checkBoxRetry.Checked = true;
+            this.checkBoxRetry.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxRetry.Location = new System.Drawing.Point(133, 107);
+            this.checkBoxRetry.Name = "checkBoxRetry";
+            this.checkBoxRetry.Size = new System.Drawing.Size(89, 19);
+            this.checkBoxRetry.TabIndex = 22;
+            this.checkBoxRetry.Text = "自动重试";
+            this.checkBoxRetry.UseVisualStyleBackColor = true;
             // 
             // RadioButtonScraps
             // 
@@ -302,6 +316,7 @@
         private System.Windows.Forms.Button ButtonLogin;
         private System.Windows.Forms.RadioButton RadioButtonScraps;
         private System.Windows.Forms.RadioButton RadioButtonGallery;
+        private System.Windows.Forms.CheckBox checkBoxRetry;
     }
 }
 

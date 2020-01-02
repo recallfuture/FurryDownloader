@@ -96,6 +96,10 @@
       <DependentUpon>FaDownloader.cs</DependentUpon>
     </Compile>
     <Compile Include="src\DownloadManager.cs" />
+    <Compile Include="src\Exceptions\InterruptException.cs" />
+    <Compile Include="src\Exceptions\NeedLoginException.cs" />
+    <Compile Include="src\Exceptions\NetworkException.cs" />
+    <Compile Include="src\Exceptions\NoSuchArtistException.cs" />
     <Compile Include="src\FullWebBrowserCookie.cs" />
     <Compile Include="src\HttpHelper.cs" />
     <Compile Include="Program.cs" />

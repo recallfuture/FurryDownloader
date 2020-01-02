@@ -403,53 +403,68 @@ namespace FurryDownloader
             // 循环下载第pageNum页
             while (true)
             {
-                if (isStop)
+                try
                 {
-                    throw new Exception("正在结束下载");
-                }
-
-                // 存储当前页面地址
-                string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
-                                                type,
-                                                userName,
-                                                startPageNum);
-
-                // 下载当前页
-                string html = GetHtml(nowUrl);
-
-                // 检查页面是否下载成功
-                if (html == null || html == "")
-                    throw new Exception("请检查网络");
-
-                // 检查此用户是否存在
-                if (!Analyze.HasUser(html))
-                    throw new Exception("未查询到该作者，请检查作者名称");
-
-                // 检查此页是否需要登录才能访问
-                if (!Analyze.NeedLogin(html))
-                    throw new Exception("需要登陆后才能下载此作者的作品");
-
-                //--------开始详情页下载循环------------
-
-                // 获得所有详情页
-                List<String> pages = Analyze.GetPages(html);
-
-                // 检查此页是否还有图片，没有的话就结束并等待所有任务完成
-                AddItemToTextBox(String.Format("第{0}页共{1}张图片", startPageNum, pages.Count));
-                if (pages.Count == 0)
-                    return;
-
-                for (int i = startPicNum - 1; i < pages.Count; ++i)
-                {
-                    // 停止时不再添加新的任务
                     if (isStop)
                     {
                         throw new Exception("正在结束下载");
                     }
-                    downloadPicture(pages[i], type);
+
+                    // 存储当前页面地址
+                    string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
+                                                    type,
+                                                    userName,
+                                                    startPageNum);
+
+                    // 下载当前页
+                    string html = GetHtml(nowUrl);
+
+                    // 检查页面是否下载成功
+                    if (html == null || html == "")
+                        throw new NetworkException("请检查网络");
+
+                    // 检查此用户是否存在
+                    if (!Analyze.HasUser(html))
+                        throw new NoSuchArtistException("未查询到该作者，请检查作者名称");
+
+                    // 检查此页是否需要登录才能访问
+                    if (!Analyze.NeedLogin(html))
+                        throw new NeedLoginException("需要登陆后才能下载此作者的作品");
+
+                    //--------开始详情页下载循环------------
+
+                    // 获得所有详情页
+                    List<String> pages = Analyze.GetPages(html);
+
+                    // 检查此页是否还有图片，没有的话就结束并等待所有任务完成
+                    AddItemToTextBox(String.Format("第{0}页共{1}张图片", startPageNum, pages.Count));
+                    if (pages.Count == 0)
+                        return;
+
+                    for (int i = startPicNum - 1; i < pages.Count; ++i)
+                    {
+                        // 停止时不再添加新的任务
+                        if (isStop)
+                        {
+                            throw new InterruptException("正在结束下载");
+                        }
+                        downloadPicture(pages[i], type);
+                    }
+                    startPicNum = 1;
+                    startPageNum++;
                 }
-                startPicNum = 1;
-                startPageNum++;
+                catch (NetworkException)
+                {
+                    if (checkBoxRetry.Checked)
+                    {
+                        AddItemToTextBox("网络不稳定，将在一秒后重试");
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
         }
 
@@ -576,10 +591,26 @@ namespace FurryDownloader
                 // ProxyIp = "127.0.0.1:1081",
             };
 
-            Console.WriteLine(cookie);
+            try
+            {
+                var response = http.GetHtml(item);
+                if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    throw new NetworkException("访问量过大，将稍后重试");
+                }
 
-            // 返回html
-            return http.GetHtml(item).Html;
+                // 返回html
+                return response.Html;
+            }
+            catch (NetworkException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                throw new NetworkException("网络异常：" + e.Message);
+            }
         }
         #endregion
     }
