@@ -21,6 +21,8 @@ namespace FurryDownloader
 
         private int totalDownloadNum = 0;   // 已下载的图片个数
         private int skipDownloadNum = 0;    // 已跳过下载的图片个数
+        private int maxDownloadNum = 0;     // 最大下载量
+        private int currentDownloadTaskNum = 0; // 当前已添加的下载任务数量
 
         private Thread workerThread;        // 主循环线程
         private DateTime startTime;         // 开始下载前的时间
@@ -167,7 +169,7 @@ namespace FurryDownloader
                     input_name.Enabled = false;
                     RadioButtonGallery.Enabled = RadioButtonScraps.Enabled = false;
                     Browse.Enabled = false;
-                    InputPageNum.Enabled = InputStartPicNum.Enabled = false;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxDownloadNum.Enabled = false;
                 }
             }
             catch
@@ -197,7 +199,7 @@ namespace FurryDownloader
                     input_name.Enabled = true;
                     RadioButtonGallery.Enabled = RadioButtonScraps.Enabled = true;
                     Browse.Enabled = true;
-                    InputPageNum.Enabled = InputStartPicNum.Enabled = true;
+                    InputPageNum.Enabled = InputStartPicNum.Enabled = InputMaxDownloadNum.Enabled = true;
                 }
             }
             catch
@@ -301,6 +303,7 @@ namespace FurryDownloader
             // 处理高级选项参数
             string inputPage = InputPageNum.Text.Trim();
             string inputStartPic = InputStartPicNum.Text.Trim();
+            string inputMaxDownloadNum = InputMaxDownloadNum.Text.Trim();
 
             // 起始页数，默认值为1
             if (!int.TryParse(inputPage, out startPageNum) || startPageNum < 1)
@@ -309,6 +312,10 @@ namespace FurryDownloader
             // 从第几张开始下载，默认值为1
             if (!int.TryParse(inputStartPic, out startPicNum) || startPicNum < 1)
                 this.startPicNum = 1;
+
+            // 最大下载量，默认为0，即不限量
+            if (!int.TryParse(inputMaxDownloadNum, out maxDownloadNum) || maxDownloadNum < 0)
+                this.maxDownloadNum = 0;
 
             // 输出高级参数下载信息
             AddItemToTextBox(string.Format("从第{0}页第{1}张开始下载\r\n", this.startPageNum, this.startPicNum));
@@ -328,6 +335,7 @@ namespace FurryDownloader
             // 下载总数和跳过总数清零
             totalDownloadNum = 0;
             skipDownloadNum = 0;
+            currentDownloadTaskNum = 0;
 
             // 初始化开始时间
             startTime = DateTime.Now;
@@ -448,6 +456,15 @@ namespace FurryDownloader
                         {
                             throw new InterruptException("正在结束下载");
                         }
+
+                        // 在到达最大下载量时停止
+                        if (maxDownloadNum != 0 && currentDownloadTaskNum >= maxDownloadNum)
+                        {
+                            AddItemToTextBox("已到达最大任务量，正在等待下载完成");
+                            return;
+                        }
+
+                        currentDownloadTaskNum++;
                         downloadPicture(pages[i], type);
                     }
                     startPicNum = 1;
@@ -555,7 +572,7 @@ namespace FurryDownloader
                     DateTime now = DateTime.Now;
                     TimeSpan time = now - startTime;
 
-                    AddItemToTextBox(String.Format("第{0}页第{1}张下载完成，已经过{2}秒", t.pageNum, t.picNum, time.TotalSeconds));
+                    AddItemToTextBox(String.Format("第{0}页第{1}张下载完成", t.pageNum, t.picNum));
                 }),
                 TaskFail = new Task.TaskFailDelegate(delegate (int id, Task t)
                 {

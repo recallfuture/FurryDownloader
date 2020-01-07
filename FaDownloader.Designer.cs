@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label info_name;
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label3;
@@ -50,6 +51,9 @@
             this.textBox = new System.Windows.Forms.TextBox();
             this.Help = new System.Windows.Forms.Button();
             this.ButtonLogin = new System.Windows.Forms.Button();
+            this.InputMaxDownloadNum = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.toolTipAutoRetry = new System.Windows.Forms.ToolTip(this.components);
             info_name = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -127,6 +131,8 @@
             // 
             this.panel.BackColor = System.Drawing.Color.Gainsboro;
             this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel.Controls.Add(this.label1);
+            this.panel.Controls.Add(this.InputMaxDownloadNum);
             this.panel.Controls.Add(this.checkBoxRetry);
             this.panel.Controls.Add(this.RadioButtonScraps);
             this.panel.Controls.Add(this.RadioButtonGallery);
@@ -155,6 +161,7 @@
             this.checkBoxRetry.Size = new System.Drawing.Size(89, 19);
             this.checkBoxRetry.TabIndex = 22;
             this.checkBoxRetry.Text = "自动重试";
+            this.toolTipAutoRetry.SetToolTip(this.checkBoxRetry, "在遇到网络问题的时候会自动重试");
             this.checkBoxRetry.UseVisualStyleBackColor = true;
             // 
             // RadioButtonScraps
@@ -184,9 +191,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(304, 67);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(82, 15);
+            this.label7.Size = new System.Drawing.Size(97, 15);
             this.label7.TabIndex = 18;
-            this.label7.Text = "张开始下载";
+            this.label7.Text = "张开始，下载";
             // 
             // label6
             // 
@@ -272,6 +279,22 @@
             this.ButtonLogin.UseVisualStyleBackColor = true;
             this.ButtonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
+            // InputMaxDownloadNum
+            // 
+            this.InputMaxDownloadNum.Location = new System.Drawing.Point(407, 62);
+            this.InputMaxDownloadNum.Name = "InputMaxDownloadNum";
+            this.InputMaxDownloadNum.Size = new System.Drawing.Size(47, 25);
+            this.InputMaxDownloadNum.TabIndex = 23;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(460, 67);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(22, 15);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "张";
+            // 
             // mainFrom
             // 
             this.AcceptButton = this.ButtonEnter;
@@ -317,6 +340,9 @@
         private System.Windows.Forms.RadioButton RadioButtonScraps;
         private System.Windows.Forms.RadioButton RadioButtonGallery;
         private System.Windows.Forms.CheckBox checkBoxRetry;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox InputMaxDownloadNum;
+        private System.Windows.Forms.ToolTip toolTipAutoRetry;
     }
 }
 
