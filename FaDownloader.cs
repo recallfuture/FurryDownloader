@@ -419,7 +419,7 @@ namespace FurryDownloader
                     }
 
                     // 存储当前页面地址
-                    string nowUrl = string.Format("http://www.furaffinity.net/{0}/{1}/{2}",
+                    string nowUrl = string.Format("https://www.furaffinity.net/{0}/{1}/{2}",
                                                     type,
                                                     userName,
                                                     startPageNum);
@@ -601,7 +601,7 @@ namespace FurryDownloader
                 Cookie = cookie,//字符串Cookie     可选项
                 UserAgent = "PostmanRuntime/7.17.1",//用户的浏览器类型，版本，操作系统     可选项有默认值
                 Accept = "*/*",//    可选项有默认值
-                Referer = "http://www.furaffinity.net",//来源URL     可选项
+                Referer = "https://www.furaffinity.net",//来源URL     可选项
                 Host = "www.furaffinity.net",
                 ResultType = ResultType.String,//返回数据类型，是Byte还是String
                 Connectionlimit = 16,

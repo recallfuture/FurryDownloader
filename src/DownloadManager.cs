@@ -123,7 +123,7 @@ namespace FurryDownloader
                 UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",//用户的浏览器类型，版本，操作系统     可选项有默认值
                 Accept = "text/html, application/xhtml+xml, */*",//    可选项有默认值
                 ContentType = "*/*",//返回类型    可选项有默认值
-                Referer = "http://www.furaffinity.net",//来源URL     可选项
+                Referer = "https://www.furaffinity.net",//来源URL     可选项
                 ResultType = ResultType.Byte,//返回数据类型，是Byte还是String
                 // ProxyIp = "127.0.0.1:1081",
             };

@@ -40,7 +40,7 @@ namespace FurryDownloader
             MatchCollection matchs = Regex.Matches(content, @"<a href=""/view/\d+/"">");
             foreach (Match match in matchs)
             {
-                pages.Add("http://www.furaffinity.net" + match.Value.Split('"')[1]);
+                pages.Add("https://www.furaffinity.net" + match.Value.Split('"')[1]);
             }
 
             return pages;
@@ -68,7 +68,7 @@ namespace FurryDownloader
         /// <returns>返回提取出的图片名</returns>
         public static string GetFileName(string downloadUrl)
         {
-            // http://d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png
+            // https://d.facdn.net/art/rudragon/1493352182/1493352159.rudragon_lil_punk_by_phation-db7d67d.png
             string[] result = downloadUrl.Split('/');
 
             return result[result.Length - 1];

@@ -1,5 +1,5 @@
 # Fa图片批量下载器
-用于根据作者名批量下载[furaffinity](http://www.furaffinity.net)网站的图片。
+用于根据作者名批量下载[furaffinity](https://www.furaffinity.net)网站的图片。
 
 ## 界面
 
