@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("FurryDownloader")]
-[assembly: AssemblyDescription("批量下载Fur Affinity上的图片的软件")]
+[assembly: AssemblyDescription("批量下载 FurAffinity.net 上的图片的软件")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("FurryDownloader")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // 可以指定所有这些值，也可以使用“生成号”和“修订号”的默认值，
 // 方法是按如下所示使用“*”:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("5.4.0.0")]
-[assembly: AssemblyFileVersion("5.4.0.0")]
+[assembly: AssemblyVersion("5.4.1.0")]
+[assembly: AssemblyFileVersion("5.4.1.0")]

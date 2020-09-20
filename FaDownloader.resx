@@ -133,7 +133,8 @@
     <value>17, 17</value>
   </metadata>
   <data name="textBox.Text" xml:space="preserve">
-    <value>我的邮箱：recallsufuture@gmail.com
+    <value>当前版本：v5.4.1
+我的邮箱：recallsufuture@gmail.com
 默认下载到当前目录下以作者名命名的文件夹里。
 默认每页48张图片。默认将所选图集的图片全部下载。
 高级参数如果留空或填0，都会使用默认参数下载。
