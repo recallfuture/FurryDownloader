@@ -501,8 +501,13 @@ namespace FurryDownloader
             string cacheFile = cacheDir + pageId;
             string pictureUrl = null;
 
+            // 关闭缓存的话就顺便清理掉对应的缓存
+            if (checkBoxNoCache.Checked)
+            {
+                File.Delete(cacheFile);
+            }
             // 从缓存中获取地址
-            if (File.Exists(cacheFile))
+            else if (File.Exists(cacheFile))
             {
                 pictureUrl = File.ReadAllText(cacheFile);
                 if (pictureUrl == "")

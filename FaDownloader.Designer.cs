@@ -38,6 +38,8 @@
             this.ButtonEnter = new System.Windows.Forms.Button();
             this.ButtonCancle = new System.Windows.Forms.Button();
             this.panel = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.InputMaxDownloadNum = new System.Windows.Forms.TextBox();
             this.checkBoxRetry = new System.Windows.Forms.CheckBox();
             this.RadioButtonScraps = new System.Windows.Forms.RadioButton();
             this.RadioButtonGallery = new System.Windows.Forms.RadioButton();
@@ -51,9 +53,8 @@
             this.textBox = new System.Windows.Forms.TextBox();
             this.Help = new System.Windows.Forms.Button();
             this.ButtonLogin = new System.Windows.Forms.Button();
-            this.InputMaxDownloadNum = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.toolTipAutoRetry = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxNoCache = new System.Windows.Forms.CheckBox();
             info_name = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -131,6 +132,7 @@
             // 
             this.panel.BackColor = System.Drawing.Color.Gainsboro;
             this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel.Controls.Add(this.checkBoxNoCache);
             this.panel.Controls.Add(this.label1);
             this.panel.Controls.Add(this.InputMaxDownloadNum);
             this.panel.Controls.Add(this.checkBoxRetry);
@@ -150,6 +152,22 @@
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(526, 157);
             this.panel.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(460, 67);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(22, 15);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "张";
+            // 
+            // InputMaxDownloadNum
+            // 
+            this.InputMaxDownloadNum.Location = new System.Drawing.Point(407, 62);
+            this.InputMaxDownloadNum.Name = "InputMaxDownloadNum";
+            this.InputMaxDownloadNum.Size = new System.Drawing.Size(47, 25);
+            this.InputMaxDownloadNum.TabIndex = 23;
             // 
             // checkBoxRetry
             // 
@@ -279,21 +297,15 @@
             this.ButtonLogin.UseVisualStyleBackColor = true;
             this.ButtonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
-            // InputMaxDownloadNum
+            // checkBoxNoCache
             // 
-            this.InputMaxDownloadNum.Location = new System.Drawing.Point(407, 62);
-            this.InputMaxDownloadNum.Name = "InputMaxDownloadNum";
-            this.InputMaxDownloadNum.Size = new System.Drawing.Size(47, 25);
-            this.InputMaxDownloadNum.TabIndex = 23;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(460, 67);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(22, 15);
-            this.label1.TabIndex = 24;
-            this.label1.Text = "张";
+            this.checkBoxNoCache.AutoSize = true;
+            this.checkBoxNoCache.Location = new System.Drawing.Point(228, 107);
+            this.checkBoxNoCache.Name = "checkBoxNoCache";
+            this.checkBoxNoCache.Size = new System.Drawing.Size(119, 19);
+            this.checkBoxNoCache.TabIndex = 25;
+            this.checkBoxNoCache.Text = "关闭缓存加速";
+            this.checkBoxNoCache.UseVisualStyleBackColor = true;
             // 
             // mainFrom
             // 
@@ -343,6 +355,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox InputMaxDownloadNum;
         private System.Windows.Forms.ToolTip toolTipAutoRetry;
+        private System.Windows.Forms.CheckBox checkBoxNoCache;
     }
 }
 

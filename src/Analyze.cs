@@ -58,7 +58,7 @@ namespace FurryDownloader
 
             if (matchs.Count == 0)
                 return null;
-            else return "http:" + matchs[0].Value.Split('"')[1];
+            else return "https:" + matchs[0].Value.Split('"')[1];
         }
 
         /// <summary>
